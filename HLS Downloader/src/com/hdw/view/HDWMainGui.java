@@ -1,27 +1,38 @@
 package com.hdw.view;
 
+import java.io.*;
 import java.awt.*;
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-
+import java.awt.event.*;
+import java.net.*;
+import java.util.*;
 import javax.swing.*;
-
-import com.hdw.controller.PlaylistParser;
-import com.hdw.model.Chunklist;
 import com.phill.libs.*;
+import com.hdw.model.*;
+import com.hdw.controller.*;
 
 public class HDWMainGui extends JFrame {
 
+	// Serial
 	private static final long serialVersionUID = 610724819466691396L;
 	
-	private JTextField textURL;
-	private ArrayList<Chunklist> playlist;
-	private JTextField textOutputFile;
+	// Graphical attributes
+	private final JTextField textURL;
+	private final JTextField textOutputFile;
+	private final JComboBox<String> comboResolution;
+	private final ImageIcon loading = new ImageIcon(ResourceManager.getResource("icon/loading.gif"));
 	
+	// Creating custom colors
+	private final Color rd_dk = new Color(0xBC1742);
+	private final Color blue  = new Color(0x1F60CB);
+	
+	// Dynamic attributes
+	private ArrayList<Chunklist> playlist;
 	private File lastSelectedDir, outputFile;
-	private JComboBox<String> comboResolution;
+	private JButton buttonURLPaste;
+	private JButton buttonURLClear;
+	private JButton buttonURLParse;
+	private JLabel textLog;
+	
 
 	public static void main(String[] args) {
 		new HDWMainGui();
@@ -30,27 +41,25 @@ public class HDWMainGui extends JFrame {
 	public HDWMainGui() {
 		super("HDW - build 20200914");
 		
-		// Recovering graphical elements from 'res' directory
+		// Retrieving graphical elements from 'res' directory
 		//GraphicsHelper.setFrameIcon(this,"icon/icon.png");
 		GraphicsHelper helper = GraphicsHelper.getInstance();
 		Font   font = helper.getFont ();
 		Color color = helper.getColor();
 		
-		Icon pasteIcon = ResourceManager.getResizedIcon("icon/clipboard_past.png",20,20);
-		Icon clearIcon = ResourceManager.getResizedIcon("icon/clear.png",20,20);
-		Icon parseIcon = ResourceManager.getResizedIcon("icon/cog.png",20,20);
-		Icon selectIcon = ResourceManager.getResizedIcon("icon/zoom.png",20,20);
+		Icon clearIcon    = ResourceManager.getResizedIcon("icon/clear.png",20,20);
+		Icon downloadIcon = ResourceManager.getResizedIcon("icon/save.png",20,20);
+		Icon exitIcon     = ResourceManager.getResizedIcon("icon/shutdown.png",20,20);
+		Icon parseIcon    = ResourceManager.getResizedIcon("icon/cog.png",20,20);
+		Icon pasteIcon    = ResourceManager.getResizedIcon("icon/clipboard_past.png",20,20);
+		Icon selectIcon   = ResourceManager.getResizedIcon("icon/zoom.png",20,20);
 		
 		// Building UI
 		Dimension dimension = new Dimension(1024,640);
-		JPanel mainFrame = new JPaintedPanel("img/background.png",dimension);
-		setContentPane(mainFrame);
 		
-		setSize(dimension);
-		setResizable(false);
-		setLocationRelativeTo(null);
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		JPanel mainFrame = new JPaintedPanel("img/background.png",dimension);
 		mainFrame.setLayout(null);
+		setContentPane(mainFrame);
 		
 		JPanel panelURL = new JPanel();
 		panelURL.setBorder(helper.getTitledBorder("HLS Playlist URL"));
@@ -60,28 +69,28 @@ public class HDWMainGui extends JFrame {
 		mainFrame.add(panelURL);
 		
 		textURL = new JTextField();
-		textURL.setToolTipText("Here goes the 'master.json' URL");
+		textURL.setToolTipText("Here goes the M3U playlist URL");
 		textURL.setForeground(color);
 		textURL.setFont(font);
 		textURL.setColumns(10);
 		textURL.setBounds(12, 30, 850, 25);
 		panelURL.add(textURL);
 		
-		JButton buttonURLPaste = new JButton(pasteIcon);
+		buttonURLPaste = new JButton(pasteIcon);
 		buttonURLPaste.setToolTipText("Get link from clipboard");
 		buttonURLPaste.addActionListener((event) -> textURL.setText(AlertDialog.copyFromClipboard()));
 		buttonURLPaste.setBounds(875, 30, 30, 25);
 		panelURL.add(buttonURLPaste);
 		
-		JButton buttonURLClear = new JButton(clearIcon);
+		buttonURLClear = new JButton(clearIcon);
 		buttonURLClear.setToolTipText("Clear");
-		buttonURLClear.addActionListener((event) -> actionURLClear());
+		buttonURLClear.addActionListener((event) -> actionPlaylistClear());
 		buttonURLClear.setBounds(915, 30, 30, 25);
 		panelURL.add(buttonURLClear);
 		
-		JButton buttonURLParse = new JButton(parseIcon);
+		buttonURLParse = new JButton(parseIcon);
 		buttonURLParse.setToolTipText("Parse");
-		buttonURLParse.addActionListener((event) -> actionURLParse());
+		buttonURLParse.addActionListener((event) -> actionPlaylistParse());
 		buttonURLParse.setBounds(955, 30, 30, 25);
 		panelURL.add(buttonURLParse);
 		
@@ -92,102 +101,278 @@ public class HDWMainGui extends JFrame {
 		mainFrame.add(panelMedia);
 		panelMedia.setLayout(null);
 		
-		JPanel panel = new JPanel();
-		panel.setBorder(helper.getTitledBorder("Resolution"));
-		panel.setOpaque(false);
-		panel.setBounds(12, 25, 145, 70);
-		panelMedia.add(panel);
-		panel.setLayout(null);
+		JPanel panelResolution = new JPanel();
+		panelResolution.setBorder(helper.getTitledBorder("Resolution"));
+		panelResolution.setOpaque(false);
+		panelResolution.setBounds(12, 25, 145, 70);
+		panelMedia.add(panelResolution);
+		panelResolution.setLayout(null);
 		
 		comboResolution = new JComboBox<String>();
 		comboResolution.setBounds(12, 25, 115, 25);
 		comboResolution.setFont(font);
 		comboResolution.setForeground(color);
-		panel.add(comboResolution);
+		panelResolution.add(comboResolution);
 		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBorder(helper.getTitledBorder("Output File"));
-		panel_1.setOpaque(false);
-		panel_1.setBounds(169, 25, 819, 70);
-		panelMedia.add(panel_1);
-		panel_1.setLayout(null);
+		JPanel panelOutput = new JPanel();
+		panelOutput.setBorder(helper.getTitledBorder("Output File"));
+		panelOutput.setOpaque(false);
+		panelOutput.setBounds(169, 25, 819, 70);
+		panelMedia.add(panelOutput);
+		panelOutput.setLayout(null);
 		
 		textOutputFile = new JTextField();
 		textOutputFile.setEditable(false);
 		textOutputFile.setFont(font);
 		textOutputFile.setForeground(color);
 		textOutputFile.setBounds(12, 25, 713, 25);
-		panel_1.add(textOutputFile);
 		textOutputFile.setColumns(10);
+		panelOutput.add(textOutputFile);
 		
 		JButton buttonOutputSelect = new JButton(selectIcon);
 		buttonOutputSelect.addActionListener((event) -> actionOutputSelect());
 		buttonOutputSelect.setToolTipText("Select file");
 		buttonOutputSelect.setBounds(737, 25, 30, 25);
-		panel_1.add(buttonOutputSelect);
+		panelOutput.add(buttonOutputSelect);
 		
 		JButton buttonOutputClear = new JButton(clearIcon);
 		buttonOutputClear.addActionListener((event) -> actionOutputClear());
 		buttonOutputClear.setToolTipText("Clear");
 		buttonOutputClear.setBounds(777, 25, 30, 25);
-		panel_1.add(buttonOutputClear);
+		panelOutput.add(buttonOutputClear);
 		
-		JPanel panel_2 = new JPanel();
-		panel_2.setBorder(helper.getTitledBorder("Console"));
-		panel_2.setOpaque(false);
-		panel_2.setBounds(12, 205, 1000, 361);
-		mainFrame.add(panel_2);
-		panel_2.setLayout(null);
+		JPanel panelConsole = new JPanel();
+		panelConsole.setBorder(helper.getTitledBorder("Console"));
+		panelConsole.setOpaque(false);
+		panelConsole.setBounds(12, 205, 1000, 361);
+		panelConsole.setLayout(null);
+		mainFrame.add(panelConsole);
 		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(12, 25, 976, 324);
-		panel_2.add(scrollPane);
+		JScrollPane scrollConsole = new JScrollPane();
+		scrollConsole.setBounds(12, 25, 976, 324);
+		panelConsole.add(scrollConsole);
 		
-		JTextArea textArea = new JTextArea();
-		textArea.setBackground(Color.BLACK);
-		textArea.setForeground(Color.WHITE);
-		textArea.setFont(font);
-		scrollPane.setViewportView(textArea);
+		JTextArea textConsole = new JTextArea();
+		textConsole.setBackground(Color.BLACK);
+		textConsole.setForeground(Color.WHITE);
+		textConsole.setFont(font);
+		scrollConsole.setViewportView(textConsole);
 		
-		JButton button = new JButton((Icon) null);
-		button.setToolTipText("Download media");
-		button.setBounds(982, 578, 30, 25);
-		mainFrame.add(button);
+		JButton buttonExit = new JButton(exitIcon);
+		buttonExit.addActionListener((event) -> dispose());
+		buttonExit.setToolTipText("Exit");
+		buttonExit.setBounds(942, 578, 30, 25);
+		mainFrame.add(buttonExit);
 		
-		JButton button_1 = new JButton((Icon) null);
-		button_1.setToolTipText("Exit");
-		button_1.setBounds(942, 578, 30, 25);
-		mainFrame.add(button_1);
+		JButton buttonDownload = new JButton(downloadIcon);
+		buttonDownload.setToolTipText("Download media");
+		buttonDownload.setBounds(982, 578, 30, 25);
+		mainFrame.add(buttonDownload);
+		
+		textLog = new JLabel();
+		textLog.setFont(font);
+		textLog.setBounds(12, 578, 912, 25);
+		mainFrame.add(textLog);
+		
+		setSize(dimension);
+		setResizable(false);
+		setLocationRelativeTo(null);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		
+		// Redirecting window closing event to a custom dispose() method, to prevent system instability
+		addWindowListener(new WindowAdapter() {
+		   public void windowClosing(WindowEvent event) {
+		       dispose();
+		}});
 		
 		setVisible(true);
+		
 	}
-
-	private void actionURLClear() {
+	
+	/** Resets the entire screen and its internal references. */
+	private void actionPlaylistClear() {
+		
+		// If a playlist was previously downloaded, a clear dialog is shown
+		if (this.playlist != null) {
+			
+			String message = ResourceManager.getText(this,"playlist-clear-confirm.msg",0);
+			int choice     = AlertDialog.dialog(message);
+			
+			// Breaks here when EXIT or CANCEL is selected
+			if (choice != AlertDialog.OK_OPTION)
+				return;
+			
+		}
+		
+		// Resetting parameters and unlocking panels, buttons, etc... 
+		this.playlist = null;
+		this.outputFile = null;
+		
+		this.textLog.setVisible(false);
+		
+		textOutputFile.setText(null);
+		
+		comboResolution.removeAllItems();
+		utilLockMasterPanel(false);
 		
 		textURL.setText(null);
 		textURL.requestFocus();
 		
 	}
 	
-	private void actionURLParse() {
+	/** Downloads the EXTM3U playlist and parse its data. */
+	private void actionPlaylistParse() {
 		
-		try {
+		// Getting URL from text field
+		final String  website = textURL.getText().trim();
 		
-			// Getting URL from text field
-			final String  website = textURL.getText().trim();
-			final URL playlistURL = new URL(website);
-			
-			this.playlist = PlaylistParser.getConfig(playlistURL);
-			
-			for (Chunklist chunklist: this.playlist)
-				comboResolution.addItem(chunklist.getResume());
+		// This job needs to be run inside a thread, since it connects to the Internet
+		Runnable job = () -> {
 		
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
+			try {
+				
+				// Updating UI
+				utilLockMasterPanel(true);
+				utilMessage("Downloading playlist...", blue, true);
+				
+				// Trying to download and parse the playlist object
+				final URL playlistURL = new URL(website);
+				final ArrayList<Chunklist> playlist = PlaylistParser.getConfig(playlistURL);
+				
+				// if I have a proper playlist...
+				if (playlist != null) {
+					
+					utilMessage("Parsing playlist...", blue, true);
+					
+					// ...then I save it, ...
+					this.playlist = playlist;
+					
+					// ...and fill the combobox.
+					utilFillCombo();
+					
+					// When everything finishes, the label is hidden and the clear button shown. 
+					utilHideMessage();
+					SwingUtilities.invokeLater(() -> buttonURLClear.setEnabled(true));
+					
+				}
+				
+			}
+			catch (MalformedURLException exception) {
+				utilLockMasterPanel(false);
+				utilMessage("Invalid playlist URL", rd_dk, false, 5);
+			}
+			catch (ConnectException exception) {
+				utilLockMasterPanel(false);
+				utilMessage("The server is refusing connections", rd_dk, false, 5);
+			}
+			catch (IOException exception) {
+				utilLockMasterPanel(false);
+				utilMessage(exception.getMessage(), rd_dk, false, 5);
+			}
+			catch (Exception exception) {
+				exception.printStackTrace();
+				utilLockMasterPanel(false);
+				utilMessage("Unknown error occurred, please check the console", rd_dk, false, 10);
+			}
+		
+		};
+		
+		// Doing the hard work
+		Thread jsonParseThread = new Thread(job);
+		jsonParseThread.setName("Playlist Parse Thread");
+		jsonParseThread.start();
 		
 	}
+	
+	/** Fills the given 'comboBox' with information of each individual {@link Chunklist} provided through 'playlist'. */
+	private void utilFillCombo() {
+		
+		SwingUtilities.invokeLater(() -> {
+			
+			comboResolution.removeAllItems();
+			
+			for (Chunklist chunklist: this.playlist)
+				comboResolution.addItem(chunklist.getResolution());
+		
+		});
+		
+	}
+
+	/** Sets visibility of the first panel components (panelURL).
+	 *  @param lock - if 'true' then then components are locked. Otherwise, unlocked */
+	private void utilLockMasterPanel(final boolean lock) {
+		
+		final boolean visibility = !lock;
+		
+		SwingUtilities.invokeLater(() -> {
+		
+			textURL       .setEditable(visibility);
+			buttonURLPaste.setEnabled (visibility);
+			buttonURLClear.setEnabled (visibility);
+			buttonURLParse.setEnabled (visibility);
+		
+		});
+		
+	}
+	
+	/** Shows a message in the label designed for logging during a certain period of time.
+	 *  @param message - the message to be displayed
+	 *  @param color - the font color of the message
+	 *  @param loading - if 'true' a loading gif is added to the beginning of the label
+	 *  @param seconds - the amount of time to display the given message, before hiding it */
+	private void utilMessage(final String message, final Color color, final boolean loading, int seconds) {
+		
+		// Starts a new thread to prevent the caller to wait for this method to end
+		Runnable job = () -> {
+			
+			utilMessage(message,color,loading);
+			
+			try {
+				Thread.sleep(seconds * 1000);
+			}
+			catch (InterruptedException exception) {
+				
+			}
+			finally {
+				utilHideMessage();
+			}
+			
+		};
+		
+		Thread messageThread = new Thread(job);
+		messageThread.setName("utilMessage() Thread");
+		messageThread.start();
+		
+	}
+	
+	/** Shows a message in the label designed for logging.
+	 *  @param message - the message to be displayed
+	 *  @param color - the font color of the message
+	 *  @param loading - if 'true' a loading gif is added to the beginning of the label */
+	private void utilMessage(final String message, final Color color, final boolean loading) {
+		
+		Runnable job = () -> {
+			textLog.setText(message);
+			textLog.setForeground(color);
+			textLog.setIcon(loading ? this.loading : null);
+		};
+		
+		SwingUtilities.invokeLater(job);
+	}
+	
+	/** Hides the label designed for logging. */
+	private void utilHideMessage() {
+		
+		Runnable job = () -> {
+			textLog.setText(null);
+			textLog.setIcon(null);
+		};
+		
+		SwingUtilities.invokeLater(job);
+	}
+	
+	
+	
 	
 	/** Shows a selection dialog for the output media file. */
 	private void actionOutputSelect() {

@@ -16,7 +16,7 @@ public class PlaylistParser {
 	 *  @return A list containing all the {@link Chunklist} available to download through the given URL.
 	 *  @throws JSONException when, for some reason, the valid URL could not be reached or the given link doesn't provide a proper JSON.
 	 *  @throws IOException when the attempt to connect to the URL fails. */
-	public static ArrayList<Chunklist> getConfig(final URL url) throws Exception {
+	public static ArrayList<Chunklist> getConfig(final URL url) throws IOException {
 		
 		// Connecting to the URL
 		ArrayList<Chunklist> playlist = null;
@@ -30,11 +30,11 @@ public class PlaylistParser {
 				
 			// Expired link
 			case 410:
-				throw new Exception("The provided playlist link has expired!");
+				throw new IOException("The provided playlist link has expired!");
 					
 			// Not found
 			case 404:
-				throw new Exception("The provided playlist link is not online!");
+				throw new IOException("The provided playlist link is not online!");
 			
 			// Success
 			case 200:
