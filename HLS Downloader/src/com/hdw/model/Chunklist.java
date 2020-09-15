@@ -37,8 +37,8 @@ public class Chunklist {
 	
 	/** Chunklist URL getter.
 	 *  @return Chunklist URL. */
-	public URL getURL() {
-		return this.chunkURL;
+	public String getURL() {
+		return this.chunkURL.toString();
 	}
 
 }
