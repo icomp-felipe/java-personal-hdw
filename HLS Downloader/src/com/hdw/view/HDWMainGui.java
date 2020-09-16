@@ -5,24 +5,23 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import javax.swing.*;
+
+import net.bramp.ffmpeg.*;
+import net.bramp.ffmpeg.job.*;
+import net.bramp.ffmpeg.probe.*;
+import net.bramp.ffmpeg.builder.*;
+import net.bramp.ffmpeg.progress.*;
+
 import com.phill.libs.*;
-
-import net.bramp.ffmpeg.FFmpeg;
-import net.bramp.ffmpeg.FFmpegExecutor;
-import net.bramp.ffmpeg.FFmpegUtils;
-import net.bramp.ffmpeg.FFprobe;
-import net.bramp.ffmpeg.builder.FFmpegBuilder;
-import net.bramp.ffmpeg.job.FFmpegJob;
-import net.bramp.ffmpeg.probe.FFmpegProbeResult;
-import net.bramp.ffmpeg.progress.Progress;
-import net.bramp.ffmpeg.progress.ProgressListener;
-
 import com.hdw.model.*;
 import com.hdw.controller.*;
 
+/** Implements the main User Interface and all its functionalities.
+ *  @author Felipe André - felipeandresouza@hotmail.com
+ *  @version 2.5 - 16/09/2020 */
 public class HDWMainGui extends JFrame {
 
 	// Serial
@@ -32,6 +31,13 @@ public class HDWMainGui extends JFrame {
 	private final JTextField textURL;
 	private final JTextField textOutputFile;
 	private final JComboBox<String> comboResolution;
+	private final JButton buttonURLPaste, buttonURLClear, buttonURLParse;
+	private final JButton buttonOutputSelect, buttonOutputClear;
+	private final JButton buttonDownload, buttonCancel;
+	private final JLabel labelDuration, labelLog;
+	private final JTextArea textConsole;
+	private final JProgressBar progressDownload;
+	
 	private final ImageIcon loading = new ImageIcon(ResourceManager.getResource("icon/loading.gif"));
 	
 	// Creating custom colors
@@ -44,24 +50,8 @@ public class HDWMainGui extends JFrame {
 	// Dynamic attributes
 	private ArrayList<Chunklist> playlist;
 	private File lastSelectedDir, outputFile;
-	private JButton buttonURLPaste;
-	private JButton buttonURLClear;
-	private JButton buttonURLParse;
-	private JButton buttonCancel;
-	private JLabel labelLog;
-	private JLabel labelDuration;
-	private JTextArea textConsole;
-	private JProgressBar progressDownload;
-	private JButton buttonOutputSelect;
-	private JButton buttonOutputClear;
-	
 	private Thread downloaderThread;
-	private JButton buttonDownload;
-	
-
-	public static void main(String[] args) {
-		new HDWMainGui();
-	}
+	private FFmpeg ffmpeg;
 
 	public HDWMainGui() {
 		super("HDW - build 20200916");
@@ -142,6 +132,7 @@ public class HDWMainGui extends JFrame {
 		panelResolution.add(comboResolution);
 		
 		labelDuration = new JLabel();
+		labelDuration.setForeground(color);
 		labelDuration.setHorizontalAlignment(SwingConstants.CENTER);
 		labelDuration.setFont(font);
 		labelDuration.setBounds(155, 25, 70, 25);
@@ -188,6 +179,7 @@ public class HDWMainGui extends JFrame {
 		
 		buttonCancel = new JButton(cancelIcon);
 		buttonCancel.addActionListener((event) -> actionDownloadStop());
+		buttonCancel.setToolTipText("Stops the current running download");
 		buttonCancel.setBounds(982, 578, 30, 25);
 		mainFrame.add(buttonCancel);
 		
@@ -208,6 +200,7 @@ public class HDWMainGui extends JFrame {
 		panelConsole.add(scrollConsole);
 		
 		textConsole = new JTextArea();
+		textConsole.setEditable(false);
 		textConsole.setForeground(Color.WHITE);
 		textConsole.setBackground(Color.BLACK);
 		textConsole.setFont(font);
@@ -368,6 +361,7 @@ public class HDWMainGui extends JFrame {
 		this.outputFile = null;
 		
 		this.labelLog.setVisible(false);
+		this.labelDuration.setText(null);
 		
 		textOutputFile.setText(null);
 		
@@ -410,6 +404,9 @@ public class HDWMainGui extends JFrame {
 					
 					// ...then I save it, ...
 					this.playlist = playlist;
+					
+					// ...get the media duration...
+					utilMediaDuration();
 					
 					// ...and fill the combobox.
 					utilFillCombo();
@@ -526,6 +523,27 @@ public class HDWMainGui extends JFrame {
 		
 	}
 	
+	private void utilMediaDuration() {
+		
+		// Getting first chunklist from the downloaded playlist (but could be any one as they have the same duration)
+		Chunklist chunklist = this.playlist.get(0);
+		
+		try {
+			
+			FFprobe ffprobe = new FFprobe();
+			FFmpegProbeResult res = ffprobe.probe(chunklist.getURL());
+			String duration = FFmpegUtils.toTimecode((long) res.getFormat().duration, TimeUnit.SECONDS);
+			
+			SwingUtilities.invokeLater(() -> labelDuration.setText(duration));
+			
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
 	/** Shows a message in the label designed for logging during a certain period of time.
 	 *  @param message - the message to be displayed
 	 *  @param color - the font color of the message
@@ -583,8 +601,6 @@ public class HDWMainGui extends JFrame {
 	}
 	
 	/***************************** Threaded Methods Section *******************************/
-	
-	FFmpeg ffmpeg;
 	
 	private void downloader() {
 		
@@ -665,6 +681,10 @@ public class HDWMainGui extends JFrame {
 	        // Doing the actual hard work - this thread will be locked here until the ffmpeg jog finishes
 	        job.run();
 	        
+	        // If the 'dispose()' method was called, I need to imediately finish the current Thread
+	        if (disposing)
+	        	return;
+	        
 	        // When the job finishes (or is interrupted) the UI is updated
 	        if (progressDownload.getValue() == 100) {
 	        	
@@ -675,7 +695,7 @@ public class HDWMainGui extends JFrame {
 	        }
 	        else {
 	        	
-	        	consoleln(":: Media download canceled");
+	        	consoleln(":: Media download stopped");
 	        	utilMessage("Download stopped", yl_dk, false, 5);
 	        	SwingUtilities.invokeLater(() -> progressDownload.setForeground(yl_dk));
 	        	
@@ -692,6 +712,35 @@ public class HDWMainGui extends JFrame {
 			utilLockDownloading(false);
 		}
 		
+	}
+	
+	// Flag to control safe disposing of threads 
+	private volatile boolean disposing;
+	
+	@Override
+	public void dispose() {
+		
+		// If the downloading media thread is being executed...
+		if ((this.downloaderThread != null) && (this.downloaderThread.isAlive())) {
+			
+			String message = ResourceManager.getText(this,"exit-confirm.msg",0);
+			int choice = JOptionPane.showConfirmDialog(this,message);
+			
+			// and the user really wants to exit, we cancel the current running thread before
+			if (choice == JOptionPane.OK_OPTION) {
+				this.disposing = true;
+				this.ffmpeg.interrupt();
+				super.dispose();
+			}
+			
+		}
+		else
+			super.dispose();
+		
+	}
+	
+	public static void main(String[] args) {
+		new HDWMainGui();
 	}
 	
 }
