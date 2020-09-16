@@ -9,7 +9,7 @@ import java.net.URL;
 public class Chunklist {
 	
 	private final URL chunkURL;
-	private final int width, height;
+	private int width, height;
 	
 	/** Main constructor setting parameters.
 	 *  @param chunkURL - chunklist URL
@@ -23,6 +23,10 @@ public class Chunklist {
 		
 	}
 	
+	public Chunklist(final URL chunkURL) {
+		this(chunkURL,0,0);
+	}
+	
 	/** Video width getter.
 	 *  @return Video width. */
 	public int getWidth() {
@@ -32,13 +36,22 @@ public class Chunklist {
 	/** Returns a video resolution string (width x height).
 	 *  @return Formatted video resolution string. */
 	public String getResolution() {
-		return String.format("%dx%d", this.width, this.height);
+		return (this.width == 0) ? "unknown" : String.format("%dx%d", this.width, this.height);
 	}
 	
 	/** Chunklist URL getter.
 	 *  @return Chunklist URL. */
 	public String getURL() {
 		return this.chunkURL.toString();
+	}
+	
+	public boolean hasNoResolution() {
+		return this.width == 0;
+	}
+
+	public void setResolution(final int width, final int height) {
+		this.width  = width ;
+		this.height = height;
 	}
 
 }

@@ -467,7 +467,7 @@ public class HDWMainGui extends JFrame {
 					this.playlist = playlist;
 					
 					// ...get the media duration...
-					utilMediaDuration();
+					utilMediaProbe();
 					
 					// ...and fill the combobox.
 					utilFillCombo();
@@ -584,22 +584,36 @@ public class HDWMainGui extends JFrame {
 		
 	}
 	
-	private void utilMediaDuration() {
+	/** Runs ffprobe on the first chunklist (inside the playlist) to get media duration
+	 *  and resolution (in case the user informed a direct media link instead playlist). */
+	private void utilMediaProbe() {
 		
-		// Getting first chunklist from the downloaded playlist (but could be any one as they have the same duration)
+		// Getting first chunklist from the downloaded playlist
 		Chunklist chunklist = this.playlist.get(0);
 		
 		try {
 			
 			FFprobe ffprobe = new FFprobe();
 			FFmpegProbeResult res = ffprobe.probe(chunklist.getURL());
+			
+			// Retrieving media duration
 			String duration = FFmpegUtils.toTimecode((long) res.getFormat().duration, TimeUnit.SECONDS);
 			
+			// Retrieving media resolution in case it doesn't have
+			if (chunklist.hasNoResolution())
+				for (FFmpegStream stream: res.getStreams())
+					if (stream.codec_type == FFmpegStream.CodecType.VIDEO) {
+						chunklist.setResolution(stream.width,stream.height);
+						break;
+					}
+			
+			// Updating UI with media duratiuon (resolution is done by 'utilFillCombo' method)
 			SwingUtilities.invokeLater(() -> labelDuration.setText(duration));
 			
-			
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException exception) {
+			consoleln(":: Media probing failed");
+			utilMessage("Failed to get media size and duration, please check the console", rd_dk, false, 10);
+			exception.printStackTrace();
 		}
 		
 		

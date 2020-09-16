@@ -76,6 +76,15 @@ public class PlaylistParser {
 		
 		for (int i=0; i<lines.length; ) {
 			
+			if (lines[i].contains("EXT-X-KEY")) {
+				
+				Chunklist chunklist = new Chunklist(url, 0, 0);
+				playlist.add(chunklist);
+				
+				break;
+				
+			}
+			
 			if (lines[i].contains("RESOLUTION")) {
 				
 				// Extracting resolution (raw text)
