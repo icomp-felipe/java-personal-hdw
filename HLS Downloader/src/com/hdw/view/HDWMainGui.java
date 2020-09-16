@@ -56,11 +56,12 @@ public class HDWMainGui extends JFrame {
 	private Thread downloaderThread;
 	private FFmpeg ffmpeg;
 
+	/** Builds the graphical interface and its functionalities */
 	public HDWMainGui() {
 		super("HDW - build 20200916");
 		
 		// Retrieving graphical elements from 'res' directory
-		//GraphicsHelper.setFrameIcon(this,"icon/icon.png");
+		GraphicsHelper.setFrameIcon(this,"icon/icon.png");
 		GraphicsHelper helper = GraphicsHelper.getInstance();
 		Font   font = helper.getFont ();
 		Color color = helper.getColor();
@@ -217,11 +218,6 @@ public class HDWMainGui extends JFrame {
 		progressDownload.setVisible(false);
 		panelConsole.add(progressDownload);
 		
-		setSize(dimension);
-		setResizable(false);
-		setLocationRelativeTo(null);
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		
 		// Redirecting window closing event to a custom dispose() method, to prevent system instability
 		addWindowListener(new WindowAdapter() {
 		   public void windowClosing(WindowEvent event) {
@@ -230,6 +226,11 @@ public class HDWMainGui extends JFrame {
 		
 		// Building JTextArea popup menu
 		onCreateOptionsPopupMenu();
+		
+		setSize(dimension);
+		setResizable(false);
+		setLocationRelativeTo(null);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		
 		setVisible(true);
 		
@@ -500,9 +501,9 @@ public class HDWMainGui extends JFrame {
 		};
 		
 		// Doing the hard work
-		Thread jsonParseThread = new Thread(job);
-		jsonParseThread.setName("Playlist Parse Thread");
-		jsonParseThread.start();
+		Thread playlistParseThread = new Thread(job);
+		playlistParseThread.setName("Playlist Parser Thread");
+		playlistParseThread.start();
 		
 	}
 	
@@ -677,6 +678,7 @@ public class HDWMainGui extends JFrame {
 	
 	/***************************** Threaded Methods Section *******************************/
 	
+	/** Downloads the selected media using ffmpeg. More information can be found at this method comments. */
 	private void downloader() {
 		
 		// Updating UI
@@ -814,6 +816,7 @@ public class HDWMainGui extends JFrame {
 		
 	}
 	
+	/** Main function starting UI */
 	public static void main(String[] args) {
 		new HDWMainGui();
 	}

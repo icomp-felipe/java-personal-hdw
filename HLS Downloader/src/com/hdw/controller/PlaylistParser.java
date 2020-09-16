@@ -8,7 +8,7 @@ import org.apache.commons.io.*;
 
 /** Provides useful methods to handle with HLS EXTM3U formatted files.
  *  @author Felipe André - felipeandresouza@hotmail.com
- *  @version 1.0, 14/09/2020 */
+ *  @version 1.5, 16/09/2020 */
 public class PlaylistParser {
 
 	/** Retrieves a list of {@link Chunklist} from a given url.
@@ -74,8 +74,10 @@ public class PlaylistParser {
 		
 		String[] lines = rawPlaylist.split("\n");
 		
+		// Iterating over playlist text lines
 		for (int i=0; i<lines.length; ) {
 			
+			// Detects direct media link
 			if (lines[i].contains("EXT-X-KEY")) {
 				
 				Chunklist chunklist = new Chunklist(url, 0, 0);
@@ -85,6 +87,7 @@ public class PlaylistParser {
 				
 			}
 			
+			// Detects playlist link
 			if (lines[i].contains("RESOLUTION")) {
 				
 				// Extracting resolution (raw text)
