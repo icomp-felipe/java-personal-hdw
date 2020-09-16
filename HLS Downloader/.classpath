@@ -17,5 +17,10 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/Phills Libs"/>
+	<classpathentry kind="lib" path="res/libs/ffmpeg-0.6.4.jar" sourcepath="res/libs/ffmpeg-0.6.4-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/HLS%20Downloader/res/libs/ffmpeg-0.6.4-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

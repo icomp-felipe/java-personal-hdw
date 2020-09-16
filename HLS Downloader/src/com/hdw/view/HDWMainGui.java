@@ -39,6 +39,7 @@ public class HDWMainGui extends JFrame {
 	private final Color rd_dk = new Color(0xBC1742);
 	private final Color blue  = new Color(0x1F60CB);
 	private final Color bl_lt = new Color(0x3291A8);
+	private final Color yl_dk = new Color(0xD2E86D);
 	
 	// Dynamic attributes
 	private ArrayList<Chunklist> playlist;
@@ -46,6 +47,7 @@ public class HDWMainGui extends JFrame {
 	private JButton buttonURLPaste;
 	private JButton buttonURLClear;
 	private JButton buttonURLParse;
+	private JButton buttonCancel;
 	private JLabel labelLog;
 	private JLabel labelDuration;
 	private JTextArea textConsole;
@@ -53,13 +55,16 @@ public class HDWMainGui extends JFrame {
 	private JButton buttonOutputSelect;
 	private JButton buttonOutputClear;
 	
+	private Thread downloaderThread;
+	private JButton buttonDownload;
+	
 
 	public static void main(String[] args) {
 		new HDWMainGui();
 	}
 
 	public HDWMainGui() {
-		super("HDW - build 20200914");
+		super("HDW - build 20200916");
 		
 		// Retrieving graphical elements from 'res' directory
 		//GraphicsHelper.setFrameIcon(this,"icon/icon.png");
@@ -67,6 +72,7 @@ public class HDWMainGui extends JFrame {
 		Font   font = helper.getFont ();
 		Color color = helper.getColor();
 		
+		Icon cancelIcon   = ResourceManager.getResizedIcon("icon/cancel.png",20,20);
 		Icon clearIcon    = ResourceManager.getResizedIcon("icon/clear.png",20,20);
 		Icon downloadIcon = ResourceManager.getResizedIcon("icon/save.png",20,20);
 		Icon exitIcon     = ResourceManager.getResizedIcon("icon/shutdown.png",20,20);
@@ -174,11 +180,16 @@ public class HDWMainGui extends JFrame {
 		buttonExit.setBounds(942, 578, 30, 25);
 		mainFrame.add(buttonExit);
 		
-		JButton buttonDownload = new JButton(downloadIcon);
+		buttonDownload = new JButton(downloadIcon);
 		buttonDownload.addActionListener((event) -> actionDownload());
 		buttonDownload.setToolTipText("Download media");
 		buttonDownload.setBounds(982, 578, 30, 25);
 		mainFrame.add(buttonDownload);
+		
+		buttonCancel = new JButton(cancelIcon);
+		buttonCancel.addActionListener((event) -> actionDownloadStop());
+		buttonCancel.setBounds(982, 578, 30, 25);
+		mainFrame.add(buttonCancel);
 		
 		labelLog = new JLabel();
 		labelLog.setFont(font);
@@ -209,11 +220,6 @@ public class HDWMainGui extends JFrame {
 		progressDownload.setBounds(12, 324, 976, 25);
 		progressDownload.setVisible(false);
 		panelConsole.add(progressDownload);
-		
-		JButton btnNewButton = new JButton("Interrupt");
-		btnNewButton.addActionListener((event) -> downloaderThread.interrupt());
-		btnNewButton.setBounds(813, 578, 117, 25);
-		mainFrame.add(btnNewButton);
 		
 		setSize(dimension);
 		setResizable(false);
@@ -269,7 +275,7 @@ public class HDWMainGui extends JFrame {
 
 		// Locking some fields to prevent the user to change values while downloading
 		utilLockDownloading(true);
-		//utilToggleButtons(true);
+		utilToggleButtons(true);
 		
 		// Doing the hard work...
 		this.downloaderThread = new Thread(() -> downloader());
@@ -278,7 +284,16 @@ public class HDWMainGui extends JFrame {
 		
 	}
 	
-	private Thread downloaderThread;
+	/** Stops the current running download. */
+	private void actionDownloadStop() {
+		
+		String message = ResourceManager.getText(this,"download-stop-confirm.msg",0);
+		int choice     = AlertDialog.dialog(message);
+		
+		if (choice == AlertDialog.OK_OPTION)
+			this.ffmpeg.interrupt();
+		
+	}
 	
 	/** Clears the output file internal references. */
 	private void actionOutputClear() {
@@ -556,13 +571,34 @@ public class HDWMainGui extends JFrame {
 		SwingUtilities.invokeLater(job);
 	}
 	
+	/** Toggle visibility of cancel and download buttons (that exist in the same
+	 *   location) depending if a 'downloading' operation is being run. */
+	private void utilToggleButtons(boolean downloading) {
+		
+		SwingUtilities.invokeLater(() -> {
+			buttonDownload.setVisible(!downloading);
+			buttonCancel  .setVisible( downloading);
+		});
+		
+	}
+	
 	/***************************** Threaded Methods Section *******************************/
+	
+	FFmpeg ffmpeg;
 	
 	private void downloader() {
 		
 		// Updating UI
 		utilMessage("Downloading media", blue, true);
-		SwingUtilities.invokeLater(() -> { progressDownload.setVisible(true); consoleln(":: Media download started"); });
+		SwingUtilities.invokeLater(() -> {
+			
+			progressDownload.setValue(0);
+			progressDownload.setVisible(true);
+			progressDownload.setForeground(bl_lt);
+			
+			consoleln(":: Media download started");
+			
+		});
 		
 		try {
 			
@@ -571,7 +607,7 @@ public class HDWMainGui extends JFrame {
 			final String playlistURL = selected.getURL();
 			
 			// Locating ffmpeg files
-			final FFmpeg  ffmpeg  = new FFmpeg ();	// when no parameter is passed, it retrieves the path from your system's variables
+			this.ffmpeg = new FFmpeg ();	// when no parameter is passed, it retrieves the path from your system's variables
 	        final FFprobe ffprobe = new FFprobe();
 	        
 	        // Creating executor
@@ -622,34 +658,40 @@ public class HDWMainGui extends JFrame {
 	        			
 	        		});
 	        		
-	        		// When the job finishes
-	        		if (progress.status == Progress.Status.END) {
-	        			
-	        			consoleln(":: Media download complete");
-	        			utilMessage("Everything complete", gr_dk, false, 5);
-	        			JOptionPane.showMessageDialog(null,"Everything's complete");
-	        			
-	        		}
-	        		
 	        	}
 	        	
 	        });
 	        
-	        // Doing the real download
-	        j = new Thread(job);
-	        j.start();
-	        j.join();
-			
+	        // Doing the actual hard work - this thread will be locked here until the ffmpeg jog finishes
+	        job.run();
+	        
+	        // When the job finishes (or is interrupted) the UI is updated
+	        if (progressDownload.getValue() == 100) {
+	        	
+	        	consoleln(":: Media download complete");
+	        	utilMessage("Everything complete", gr_dk, false, 5);
+	        	JOptionPane.showMessageDialog(null,"Everything's complete");
+	        	
+	        }
+	        else {
+	        	
+	        	consoleln(":: Media download canceled");
+	        	utilMessage("Download stopped", yl_dk, false, 5);
+	        	SwingUtilities.invokeLater(() -> progressDownload.setForeground(yl_dk));
+	        	
+	        }
+        	
 		}
 		catch (Exception exception) {
+			consoleln(":: Media download failed");
+			utilMessage("Failed to download media, please check the console", rd_dk, false, 10);
 			exception.printStackTrace();
 		}
 		finally {
-			//utilToggleButtons  (false);
+			utilToggleButtons  (false);
 			utilLockDownloading(false);
 		}
 		
 	}
 	
-	Thread j;
 }
