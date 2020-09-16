@@ -4,10 +4,13 @@ import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
 
 import javax.swing.*;
+
+import org.apache.commons.io.FileUtils;
 
 import net.bramp.ffmpeg.*;
 import net.bramp.ffmpeg.job.*;
@@ -225,7 +228,27 @@ public class HDWMainGui extends JFrame {
 		       dispose();
 		}});
 		
+		// Building JTextArea popup menu
+		onCreateOptionsPopupMenu();
+		
 		setVisible(true);
+		
+	}
+
+	/** Creating JTextArea popup menu */
+	private void onCreateOptionsPopupMenu() {
+		
+		JPopupMenu popup = new JPopupMenu();
+		
+		JMenuItem itemSave = new JMenuItem("Save to text file");
+		itemSave.addActionListener((event) -> actionMenuSave());
+		popup.add(itemSave);
+		
+		JMenuItem itemClear = new JMenuItem("Clear text");
+		itemClear.addActionListener((event) -> textConsole.setText(null));
+		popup.add(itemClear);
+		
+		textConsole.setComponentPopupMenu(popup);
 		
 	}
 	
@@ -288,6 +311,44 @@ public class HDWMainGui extends JFrame {
 		
 	}
 	
+	/** Saves the console text to a plain txt file using UTF-8 encoding. */
+	private void actionMenuSave() {
+		
+		final String title = "Saving console";
+		
+		// File selection dialog
+		final File file = FileChooserHelper.loadFile(this,Constants.Format.TXT,"Select an output file",false,lastSelectedDir);
+		
+		if (file != null)
+			
+			if (file.getParentFile().canWrite())
+				
+				try {
+					
+					// Getting current timestamp
+					String timeStamp = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
+					
+					// Mounting log string
+					StringBuilder builder = new StringBuilder("HDW Console Log - ");
+								  builder.append(timeStamp);
+								  builder.append("\n");
+								  builder.append(textConsole.getText());
+					
+					// Writing string to file (UTF-8)
+					FileUtils.writeStringToFile(file,builder.toString(),"UTF-8");
+					
+					AlertDialog.informativo(title, "Console log successfully saved!");
+					
+				} catch (IOException exception) {
+					exception.printStackTrace();
+					AlertDialog.erro(title, "Could not save to text file");
+				}
+		
+			else
+				AlertDialog.erro(title, "Could not create the text file.\nThe current directory is in read-only mode.");
+		
+	}
+	
 	/** Clears the output file internal references. */
 	private void actionOutputClear() {
 		
@@ -302,7 +363,7 @@ public class HDWMainGui extends JFrame {
 	private void actionOutputSelect() {
 		
 		// Recovering the selected file
-		final File file = FileChooserHelper.loadFile(this,FileFilters.MP4,"Select an output file",false,lastSelectedDir);
+		final File file = FileChooserHelper.loadFile(this,Constants.Format.MP4,"Select an output file",false,lastSelectedDir);
 		
 		// If something was selected...
 		if (file != null) {
