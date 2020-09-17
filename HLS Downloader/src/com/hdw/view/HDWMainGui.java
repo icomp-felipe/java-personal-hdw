@@ -19,6 +19,8 @@ import net.bramp.ffmpeg.builder.*;
 import net.bramp.ffmpeg.progress.*;
 
 import com.phill.libs.*;
+import com.phill.libs.ui.*;
+import com.phill.libs.sys.ClipboardUtils;
 import com.hdw.model.*;
 import com.hdw.controller.*;
 
@@ -136,7 +138,7 @@ public class HDWMainGui extends JFrame {
 		panelURL.add(textURL);
 		
 		buttonURLPaste = new JButton(pasteIcon);
-		buttonURLPaste.addActionListener((event) -> textURL.setText(AlertDialog.copyFromClipboard()));
+		buttonURLPaste.addActionListener((event) -> textURL.setText(ClipboardUtils.copy()));
 		buttonURLPaste.setBounds(677, 30, 30, 25);
 		panelURL.add(buttonURLPaste);
 		
@@ -347,14 +349,16 @@ public class HDWMainGui extends JFrame {
 	/** Checks pre-requisites and, if everything's fine, procceed with the download of selected media. */
 	private void actionDownload() {
 		
+		final String title = "Downloading media";
+		
 		/*********** Checking pre-requisites ************/
 		if (this.playlist == null) {
-			AlertDialog.erro(this.titles.getString("action-download-parse-error"));
+			AlertDialog.error(title,this.titles.getString("action-download-parse-error"));
 			return;
 		}
 		
 		if (this.outputFile == null) {
-			AlertDialog.erro(this.titles.getString("action-download-file-error"));
+			AlertDialog.error(title,this.titles.getString("action-download-file-error"));
 			return;
 		}
 		
@@ -422,15 +426,15 @@ public class HDWMainGui extends JFrame {
 					// Writing string to file (UTF-8)
 					FileUtils.writeStringToFile(file,builder.toString(),"UTF-8");
 					
-					AlertDialog.informativo(title, this.titles.getString("action-menu-save-success"));
+					AlertDialog.info(title, this.titles.getString("action-menu-save-success"));
 					
 				} catch (IOException exception) {
 					exception.printStackTrace();
-					AlertDialog.erro(title, this.titles.getString("action-menu-save-fail"));
+					AlertDialog.error(title, this.titles.getString("action-menu-save-fail"));
 				}
 		
 			else
-				AlertDialog.erro(title, this.titles.getString("action-menu-save-ro"));
+				AlertDialog.error(title, this.titles.getString("action-menu-save-ro"));
 		
 	}
 	
@@ -460,7 +464,7 @@ public class HDWMainGui extends JFrame {
 			if (!file.getParentFile().canWrite()) {
 				
 				String message = ResourceManager.getText(this,"output-select-read-only.msg",0);
-				AlertDialog.erro(message);
+				AlertDialog.error(message);
 				return;
 				
 			}
