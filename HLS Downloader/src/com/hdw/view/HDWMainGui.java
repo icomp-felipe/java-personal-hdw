@@ -24,7 +24,7 @@ import com.hdw.controller.*;
 
 /** Implements the main User Interface and all its functionalities.
  *  @author Felipe André - felipeandresouza@hotmail.com
- *  @version 2.5 - 16/09/2020 */
+ *  @version 2.6 - 17/09/2020 */
 public class HDWMainGui extends JFrame {
 
 	// Serial
@@ -41,7 +41,7 @@ public class HDWMainGui extends JFrame {
 	private final JButton buttonOutputSelect, buttonOutputClear;
 	private final JButton buttonDownload, buttonCancel, buttonExit;
 	private final JPanel panelLanguages, panelURL, panelMedia, panelResolution, panelOutput, panelConsole;
-	private final JButton buttonBrazil, buttonUSA, button_2;
+	private final JButton buttonBrazil, buttonUSA, buttonJapan;
 	private final JLabel labelDuration, labelLog;
 	private final JTextArea textConsole;
 	private final JProgressBar progressDownload;
@@ -72,6 +72,7 @@ public class HDWMainGui extends JFrame {
 		HashMap<String, Locale> locales = new HashMap<String, Locale>(2);
 		locales.put("en_US",Locale.ENGLISH);
 		locales.put("pt_BR", new Locale("pt","BR"));
+		locales.put("ja_JP", new Locale("ja","JP"));
 		
 		// Retrieving graphical elements from 'res' directory
 		GraphicsHelper.setFrameIcon(this,"icon/icon.png");
@@ -95,6 +96,7 @@ public class HDWMainGui extends JFrame {
 		
 		Icon brazilFlag = ResourceManager.getResizedIcon("icon/brazil-flag.png",35,35);
 		Icon usaFlag    = ResourceManager.getResizedIcon("icon/usa-flag.png",35,35);
+		Icon japanFlag  = ResourceManager.getResizedIcon("icon/japan-flag.png",40,40);
 		
 		panelLanguages = new JPanel();
 		panelLanguages.setOpaque(false);
@@ -114,10 +116,11 @@ public class HDWMainGui extends JFrame {
 		buttonUSA.setBounds(69, 25, 45, 40);
 		panelLanguages.add(buttonUSA);
 		
-		button_2 = new JButton((Icon) null);
-		button_2.setContentAreaFilled(false);
-		button_2.setBounds(126, 25, 45, 40);
-		panelLanguages.add(button_2);
+		buttonJapan = new JButton(japanFlag);
+		buttonJapan.addActionListener((event) -> loadTitles(locales.get("ja_JP")));
+		buttonJapan.setContentAreaFilled(false);
+		buttonJapan.setBounds(126, 25, 45, 40);
+		panelLanguages.add(buttonJapan);
 		
 		panelURL = new JPanel();
 		panelURL.setLayout(null);
@@ -258,28 +261,43 @@ public class HDWMainGui extends JFrame {
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		
+		// Loading Japanese font
+		try {
+			
+			File fontFile = ResourceManager.getResourceAsFile("fonts/KosugiMaru-Regular.ttf");
+			this.base = Font.createFont(Font.TRUETYPE_FONT, fontFile);
+			this.japanese = this.base.deriveFont(Font.PLAIN, 15);
+			
+		} catch (FontFormatException | IOException e) {
+			e.printStackTrace();
+		}
+		
 		setVisible(true);
 		
 	}
 
+	Font base, japanese;
+	
 	/** Changes the program language.
 	 *  @param locale - locale selected (using buttons) */
 	private void loadTitles(final Locale locale) {
 		
-		this.titles = ResourceBundle.getBundle("locales/titles",locale);
+		this.titles = ResourceBundle.getBundle("locales/titles",locale,new UTF8Control());
+		
+		Font font = locale.getLanguage().equals("ja") ? this.japanese : null;
 		
 		// Loading panel titles
-		panelLanguages .setBorder(helper.getTitledBorder(titles.getString("panel-languages" )));
-		panelURL       .setBorder(helper.getTitledBorder(titles.getString("panel-url"       )));
-		panelMedia     .setBorder(helper.getTitledBorder(titles.getString("panel-media"     )));
-		panelResolution.setBorder(helper.getTitledBorder(titles.getString("panel-resolution")));
-		panelOutput    .setBorder(helper.getTitledBorder(titles.getString("panel-output"    )));
-		panelURL       .setBorder(helper.getTitledBorder(titles.getString("panel-url"       )));
-		panelConsole   .setBorder(helper.getTitledBorder(titles.getString("panel-console"   )));
+		panelLanguages .setBorder(helper.getTitledBorder(titles.getString("panel-languages" ),font));
+		panelURL       .setBorder(helper.getTitledBorder(titles.getString("panel-url"       ),font));
+		panelMedia     .setBorder(helper.getTitledBorder(titles.getString("panel-media"     ),font));
+		panelResolution.setBorder(helper.getTitledBorder(titles.getString("panel-resolution"),font));
+		panelOutput    .setBorder(helper.getTitledBorder(titles.getString("panel-output"    ),font));
+		panelConsole   .setBorder(helper.getTitledBorder(titles.getString("panel-console"   ),font));
 		
 		// Loading hints
 		buttonBrazil      .setToolTipText(titles.getString("button-brazil"       ));
 		buttonUSA         .setToolTipText(titles.getString("button-usa"          ));
+		buttonJapan       .setToolTipText(titles.getString("button-japan"        ));
 		textURL           .setToolTipText(titles.getString("text-url"            ));
 		buttonURLPaste    .setToolTipText(titles.getString("button-url-paste"    ));
 		buttonURLClear    .setToolTipText(titles.getString("button-url-clear"    ));
@@ -293,7 +311,7 @@ public class HDWMainGui extends JFrame {
 		// Loading popup menu
 		itemSave .setText(titles.getString("item-save"));
 		itemClear.setText(titles.getString("item-clear"));
-	
+		
 	}
 	
 	/** Creating JTextArea popup menu */
