@@ -19,6 +19,7 @@ import net.bramp.ffmpeg.builder.*;
 import net.bramp.ffmpeg.progress.*;
 
 import com.phill.libs.*;
+import com.phill.libs.files.PhillFileUtils;
 import com.phill.libs.ui.*;
 import com.phill.libs.sys.ClipboardUtils;
 import com.hdw.model.*;
@@ -81,13 +82,13 @@ public class HDWMainGui extends JFrame {
 		Font   font = helper.getFont ();
 		Color color = helper.getColor();
 		
-		Icon cancelIcon   = ResourceManager.getResizedIcon("icon/cancel.png",20,20);
-		Icon clearIcon    = ResourceManager.getResizedIcon("icon/clear.png",20,20);
-		Icon downloadIcon = ResourceManager.getResizedIcon("icon/save.png",20,20);
-		Icon exitIcon     = ResourceManager.getResizedIcon("icon/shutdown.png",20,20);
-		Icon parseIcon    = ResourceManager.getResizedIcon("icon/cog.png",20,20);
-		Icon pasteIcon    = ResourceManager.getResizedIcon("icon/clipboard_past.png",20,20);
-		Icon selectIcon   = ResourceManager.getResizedIcon("icon/zoom.png",20,20);
+		Icon cancelIcon   = ResourceManager.getIcon("icon/cancel.png",20,20);
+		Icon clearIcon    = ResourceManager.getIcon("icon/clear.png",20,20);
+		Icon downloadIcon = ResourceManager.getIcon("icon/save.png",20,20);
+		Icon exitIcon     = ResourceManager.getIcon("icon/shutdown.png",20,20);
+		Icon parseIcon    = ResourceManager.getIcon("icon/cog.png",20,20);
+		Icon pasteIcon    = ResourceManager.getIcon("icon/clipboard_past.png",20,20);
+		Icon selectIcon   = ResourceManager.getIcon("icon/zoom.png",20,20);
 		
 		// Building UI
 		Dimension dimension = new Dimension(1024,720);
@@ -96,9 +97,9 @@ public class HDWMainGui extends JFrame {
 		mainFrame.setLayout(null);
 		setContentPane(mainFrame);
 		
-		Icon brazilFlag = ResourceManager.getResizedIcon("icon/brazil-flag.png",35,35);
-		Icon usaFlag    = ResourceManager.getResizedIcon("icon/usa-flag.png",35,35);
-		Icon japanFlag  = ResourceManager.getResizedIcon("icon/japan-flag.png",40,40);
+		Icon brazilFlag = ResourceManager.getIcon("icon/brazil-flag.png",35,35);
+		Icon usaFlag    = ResourceManager.getIcon("icon/usa-flag.png",35,35);
+		Icon japanFlag  = ResourceManager.getIcon("icon/japan-flag.png",40,40);
 		
 		panelLanguages = new JPanel();
 		panelLanguages.setOpaque(false);
@@ -399,12 +400,10 @@ public class HDWMainGui extends JFrame {
 		final String title = this.titles.getString("action-menu-save-title");
 		
 		// File selection dialog
-		final File file = FileChooserHelper.loadFile(this,
-				                                     Constants.Format.TXT,
-				                                     this.titles.getString("action-menu-save-file-dialog"),
-				                                     false,
-				                                     lastSelectedDir
-				                                     );
+		final File file = PhillFileUtils.loadFile(this.titles.getString("action-menu-save-file-dialog"),
+				                                  Constants.Format.TXT,
+				                                  PhillFileUtils.SAVE_DIALOG,
+				                                  lastSelectedDir);
 		
 		if (file != null)
 			
@@ -452,7 +451,7 @@ public class HDWMainGui extends JFrame {
 	private void actionOutputSelect() {
 		
 		// Recovering the selected file
-		final File file = FileChooserHelper.loadFile(this,Constants.Format.MP4,"Select an output file",false,lastSelectedDir);
+		final File file = PhillFileUtils.loadFile("Select an output file", Constants.Format.MP4, PhillFileUtils.SAVE_DIALOG, lastSelectedDir);
 		
 		// If something was selected...
 		if (file != null) {
