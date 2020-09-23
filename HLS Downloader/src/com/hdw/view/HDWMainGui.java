@@ -20,6 +20,8 @@ import net.bramp.ffmpeg.progress.*;
 
 import com.phill.libs.*;
 import com.phill.libs.files.PhillFileUtils;
+import com.phill.libs.i18n.PropertyBundle;
+import com.phill.libs.i18n.PropertyBundleFiller;
 import com.phill.libs.ui.*;
 import com.phill.libs.sys.ClipboardUtils;
 import com.hdw.model.*;
@@ -65,7 +67,8 @@ public class HDWMainGui extends JFrame {
 	private Thread downloaderThread;
 	private FFmpeg ffmpeg;
 	
-	private ResourceBundle titles;
+	private final PropertyBundle bundle;
+	private final PropertyBundleFiller filler;
 
 	/** Builds the graphical interface and its functionalities */
 	public HDWMainGui() {
@@ -76,6 +79,10 @@ public class HDWMainGui extends JFrame {
 		locales.put("en_US",Locale.ENGLISH);
 		locales.put("pt_BR", new Locale("pt","BR"));
 		locales.put("ja_JP", new Locale("ja","JP"));
+		
+		// 
+		this.bundle = new PropertyBundle("i18n/titles", null);
+		this.filler = new PropertyBundleFiller(this.bundle);
 		
 		// Retrieving graphical elements from 'res' directory
 		GraphicsHelper.setFrameIcon(this,"icon/icon.png");
@@ -105,30 +112,35 @@ public class HDWMainGui extends JFrame {
 		panelLanguages.setOpaque(false);
 		panelLanguages.setBounds(12, 12, 185, 75);
 		panelLanguages.setLayout(null);
+		filler.border(panelLanguages, "panel-languages");
 		mainFrame.add(panelLanguages);
 		
 		buttonBrazil = new JButton(brazilFlag);
-		buttonBrazil.addActionListener((event) -> loadTitles(locales.get("pt_BR")));
+		buttonBrazil.addActionListener((event) -> this.bundle.changeLocale(locales.get("pt_BR")));
 		buttonBrazil.setContentAreaFilled(false);
 		buttonBrazil.setBounds(12, 25, 45, 40);
+		filler.tooltip(buttonBrazil, "button-brazil");
 		panelLanguages.add(buttonBrazil);
 		
 		buttonUSA = new JButton(usaFlag);
-		buttonUSA.addActionListener((event) -> loadTitles(locales.get("en_US")));
+		buttonUSA.addActionListener((event) -> this.bundle.changeLocale(locales.get("en_US")));
 		buttonUSA.setContentAreaFilled(false);
 		buttonUSA.setBounds(69, 25, 45, 40);
+		filler.tooltip(buttonUSA, "button-usa");
 		panelLanguages.add(buttonUSA);
 		
 		buttonJapan = new JButton(japanFlag);
-		buttonJapan.addActionListener((event) -> loadTitles(locales.get("ja_JP")));
+		buttonJapan.addActionListener((event) -> this.bundle.changeLocale(locales.get("ja_JP")));
 		buttonJapan.setContentAreaFilled(false);
 		buttonJapan.setBounds(126, 25, 45, 40);
+		filler.tooltip(buttonJapan, "button-japan");
 		panelLanguages.add(buttonJapan);
 		
 		panelURL = new JPanel();
 		panelURL.setLayout(null);
 		panelURL.setOpaque(false);
 		panelURL.setBounds(209, 12, 803, 75);
+		filler.border(panelURL, "panel-url");
 		mainFrame.add(panelURL);
 		
 		textURL = new JTextField();
@@ -136,34 +148,40 @@ public class HDWMainGui extends JFrame {
 		textURL.setFont(font);
 		textURL.setColumns(10);
 		textURL.setBounds(12, 30, 653, 25);
+		filler.tooltip(textURL, "text-url");
 		panelURL.add(textURL);
 		
 		buttonURLPaste = new JButton(pasteIcon);
 		buttonURLPaste.addActionListener((event) -> textURL.setText(ClipboardUtils.copy()));
 		buttonURLPaste.setBounds(677, 30, 30, 25);
+		filler.tooltip(buttonURLPaste, "button-url-paste");
 		panelURL.add(buttonURLPaste);
 		
 		buttonURLClear = new JButton(clearIcon);
 		buttonURLClear.addActionListener((event) -> actionPlaylistClear());
 		buttonURLClear.setBounds(719, 30, 30, 25);
+		filler.tooltip(buttonURLClear, "button-url-clear");
 		panelURL.add(buttonURLClear);
 		
 		buttonURLParse = new JButton(parseIcon);
 		buttonURLParse.addActionListener((event) -> actionPlaylistParse());
 		buttonURLParse.setBounds(761, 30, 30, 25);
+		filler.tooltip(buttonURLParse, "button-url-parse");
 		panelURL.add(buttonURLParse);
 		
 		panelMedia = new JPanel();
 		panelMedia.setOpaque(false);
 		panelMedia.setBounds(12, 90, 1000, 110);
-		mainFrame.add(panelMedia);
 		panelMedia.setLayout(null);
+		filler.border(panelMedia, "panel-media");
+		mainFrame.add(panelMedia);
 		
 		panelResolution = new JPanel();
 		panelResolution.setOpaque(false);
 		panelResolution.setBounds(12, 25, 239, 70);
-		panelMedia.add(panelResolution);
+		filler.border(panelResolution, "panel-resolution");
 		panelResolution.setLayout(null);
+		panelMedia.add(panelResolution);
 		
 		comboResolution = new JComboBox<String>();
 		comboResolution.addActionListener((event) -> listenerCombo());
@@ -182,8 +200,9 @@ public class HDWMainGui extends JFrame {
 		panelOutput = new JPanel();
 		panelOutput.setOpaque(false);
 		panelOutput.setBounds(263, 25, 725, 70);
-		panelMedia.add(panelOutput);
 		panelOutput.setLayout(null);
+		filler.border(panelOutput,"panel-output");
+		panelMedia.add(panelOutput);
 		
 		textOutputFile = new JTextField();
 		textOutputFile.setEditable(false);
@@ -196,26 +215,31 @@ public class HDWMainGui extends JFrame {
 		buttonOutputSelect = new JButton(selectIcon);
 		buttonOutputSelect.addActionListener((event) -> actionOutputSelect());
 		buttonOutputSelect.setBounds(641, 25, 30, 25);
+		filler.tooltip(buttonOutputSelect, "button-output-select");
 		panelOutput.add(buttonOutputSelect);
 		
 		buttonOutputClear = new JButton(clearIcon);
 		buttonOutputClear.addActionListener((event) -> actionOutputClear());
 		buttonOutputClear.setBounds(683, 25, 30, 25);
+		filler.tooltip(buttonOutputClear, "button-output-clear");
 		panelOutput.add(buttonOutputClear);
 		
 		buttonExit = new JButton(exitIcon);
 		buttonExit.addActionListener((event) -> dispose());
 		buttonExit.setBounds(942, 658, 30, 25);
+		filler.tooltip(buttonExit, "button-exit");
 		mainFrame.add(buttonExit);
 		
 		buttonDownload = new JButton(downloadIcon);
 		buttonDownload.addActionListener((event) -> actionDownload());
 		buttonDownload.setBounds(982, 658, 30, 25);
+		filler.tooltip(buttonDownload, "button-download");
 		mainFrame.add(buttonDownload);
 		
 		buttonCancel = new JButton(cancelIcon);
 		buttonCancel.addActionListener((event) -> actionDownloadStop());
 		buttonCancel.setBounds(982, 658, 30, 25);
+		filler.tooltip(buttonCancel, "button-cancel");
 		mainFrame.add(buttonCancel);
 		
 		labelLog = new JLabel();
@@ -226,8 +250,9 @@ public class HDWMainGui extends JFrame {
 		panelConsole = new JPanel();
 		panelConsole.setOpaque(false);
 		panelConsole.setBounds(12, 205, 1000, 361);
-		mainFrame.add(panelConsole);
 		panelConsole.setLayout(null);
+		filler.border(panelConsole, "panel-console");
+		mainFrame.add(panelConsole);
 		
 		JScrollPane scrollConsole = new JScrollPane();
 		scrollConsole.setBounds(12, 30, 976, 282);
@@ -257,66 +282,18 @@ public class HDWMainGui extends JFrame {
 		// Building JTextArea popup menu
 		onCreateOptionsPopupMenu();
 		
-		loadTitles(Locale.getDefault());
+		// Loading texts, tooltip texts and borders to UI
+		this.bundle.refresh();
 		
 		setSize(dimension);
 		setResizable(false);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		
-		// Loading Japanese font
-		try {
-			
-			File fontFile = ResourceManager.getResourceAsFile("fonts/KosugiMaru-Regular.ttf");
-			this.base = Font.createFont(Font.TRUETYPE_FONT, fontFile);
-			this.japanese = this.base.deriveFont(Font.PLAIN, 15);
-			
-		} catch (FontFormatException | IOException e) {
-			e.printStackTrace();
-		}
-		
 		setVisible(true);
 		
 	}
 
-	Font base, japanese;
-	
-	/** Changes the program language.
-	 *  @param locale - locale selected (using buttons) */
-	private void loadTitles(final Locale locale) {
-		
-		this.titles = ResourceBundle.getBundle("locales/titles",locale,new UTF8Control());
-		
-		Font font = locale.getLanguage().equals("ja") ? this.japanese : null;
-		
-		// Loading panel titles
-		panelLanguages .setBorder(helper.getTitledBorder(titles.getString("panel-languages" ),font));
-		panelURL       .setBorder(helper.getTitledBorder(titles.getString("panel-url"       ),font));
-		panelMedia     .setBorder(helper.getTitledBorder(titles.getString("panel-media"     ),font));
-		panelResolution.setBorder(helper.getTitledBorder(titles.getString("panel-resolution"),font));
-		panelOutput    .setBorder(helper.getTitledBorder(titles.getString("panel-output"    ),font));
-		panelConsole   .setBorder(helper.getTitledBorder(titles.getString("panel-console"   ),font));
-		
-		// Loading hints
-		buttonBrazil      .setToolTipText(titles.getString("button-brazil"       ));
-		buttonUSA         .setToolTipText(titles.getString("button-usa"          ));
-		buttonJapan       .setToolTipText(titles.getString("button-japan"        ));
-		textURL           .setToolTipText(titles.getString("text-url"            ));
-		buttonURLPaste    .setToolTipText(titles.getString("button-url-paste"    ));
-		buttonURLClear    .setToolTipText(titles.getString("button-url-clear"    ));
-		buttonURLParse    .setToolTipText(titles.getString("button-url-parse"    ));
-		buttonOutputSelect.setToolTipText(titles.getString("button-output-select"));
-		buttonOutputClear .setToolTipText(titles.getString("button-output-clear" ));
-		buttonDownload    .setToolTipText(titles.getString("button-download"     ));
-		buttonCancel      .setToolTipText(titles.getString("button-cancel"       ));
-		buttonExit        .setToolTipText(titles.getString("button-exit"         ));
-		
-		// Loading popup menu
-		itemSave .setText(titles.getString("item-save"));
-		itemClear.setText(titles.getString("item-clear"));
-		
-	}
-	
 	/** Creating JTextArea popup menu */
 	private void onCreateOptionsPopupMenu() {
 		
@@ -324,10 +301,12 @@ public class HDWMainGui extends JFrame {
 		
 		itemSave = new JMenuItem();
 		itemSave.addActionListener((event) -> actionMenuSave());
+		filler.text(itemSave, "item-save");
 		popup.add(itemSave);
 		
 		itemClear = new JMenuItem();
 		itemClear.addActionListener((event) -> textConsole.setText(null));
+		filler.text(itemClear, "item-clear");
 		popup.add(itemClear);
 		
 		textConsole.setComponentPopupMenu(popup);
@@ -354,18 +333,18 @@ public class HDWMainGui extends JFrame {
 		
 		/*********** Checking pre-requisites ************/
 		if (this.playlist == null) {
-			AlertDialog.error(title,this.titles.getString("action-download-parse-error"));
+			AlertDialog.error(title,this.bundle.getString("action-download-parse-error"));
 			return;
 		}
 		
 		if (this.outputFile == null) {
-			AlertDialog.error(title,this.titles.getString("action-download-file-error"));
+			AlertDialog.error(title,this.bundle.getString("action-download-file-error"));
 			return;
 		}
 		
 		/********* Showing a confirm dialog *************/
 		String resolution = this.comboResolution.getSelectedItem().toString();
-		String overwrite = (this.outputFile.exists()) ? this.titles.getString("action-download-overwrite") : "";
+		String overwrite = (this.outputFile.exists()) ? this.bundle.getString("action-download-overwrite") : "";
 		
 		String message = ResourceManager.getText(this,"download-confirm.msg",resolution,this.outputFile.getAbsolutePath(),overwrite);
 		int choice = AlertDialog.dialog(message);
@@ -387,7 +366,7 @@ public class HDWMainGui extends JFrame {
 	/** Stops the current running download. */
 	private void actionDownloadStop() {
 		
-		int choice = AlertDialog.dialog(this.titles.getString("action-download-stop"));
+		int choice = AlertDialog.dialog(this.bundle.getString("action-download-stop"));
 		
 		if (choice == AlertDialog.OK_OPTION)
 			this.ffmpeg.interrupt();
@@ -397,10 +376,10 @@ public class HDWMainGui extends JFrame {
 	/** Saves the console text to a plain txt file using UTF-8 encoding. */
 	private void actionMenuSave() {
 		
-		final String title = this.titles.getString("action-menu-save-title");
+		final String title = this.bundle.getString("action-menu-save-title");
 		
 		// File selection dialog
-		final File file = PhillFileUtils.loadFile(this.titles.getString("action-menu-save-file-dialog"),
+		final File file = PhillFileUtils.loadFile(this.bundle.getString("action-menu-save-file-dialog"),
 				                                  Constants.Format.TXT,
 				                                  PhillFileUtils.SAVE_DIALOG,
 				                                  lastSelectedDir);
@@ -412,11 +391,11 @@ public class HDWMainGui extends JFrame {
 				try {
 					
 					// Getting current timestamp
-					String format = this.titles.getString("action-menu-save-timestamp");
+					String format = this.bundle.getString("action-menu-save-timestamp");
 					String timeStamp = new SimpleDateFormat(format).format(new Date());
 					
 					// Mounting log string
-					StringBuilder builder = new StringBuilder(this.titles.getString("action-menu-save-log"));
+					StringBuilder builder = new StringBuilder(this.bundle.getString("action-menu-save-log"));
 					              builder.append(" - ");
 								  builder.append(timeStamp);
 								  builder.append("\n");
@@ -425,15 +404,15 @@ public class HDWMainGui extends JFrame {
 					// Writing string to file (UTF-8)
 					FileUtils.writeStringToFile(file,builder.toString(),"UTF-8");
 					
-					AlertDialog.info(title, this.titles.getString("action-menu-save-success"));
+					AlertDialog.info(title, this.bundle.getString("action-menu-save-success"));
 					
 				} catch (IOException exception) {
 					exception.printStackTrace();
-					AlertDialog.error(title, this.titles.getString("action-menu-save-fail"));
+					AlertDialog.error(title, this.bundle.getString("action-menu-save-fail"));
 				}
 		
 			else
-				AlertDialog.error(title, this.titles.getString("action-menu-save-ro"));
+				AlertDialog.error(title, this.bundle.getString("action-menu-save-ro"));
 		
 	}
 	
