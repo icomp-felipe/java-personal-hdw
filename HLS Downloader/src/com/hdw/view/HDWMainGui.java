@@ -112,35 +112,35 @@ public class HDWMainGui extends JFrame {
 		panelLanguages.setOpaque(false);
 		panelLanguages.setBounds(12, 12, 185, 75);
 		panelLanguages.setLayout(null);
-		filler.border(panelLanguages, "panel-languages");
+		filler.setBorder(panelLanguages, "panel-languages");
 		mainFrame.add(panelLanguages);
 		
 		buttonBrazil = new JButton(brazilFlag);
 		buttonBrazil.addActionListener((event) -> this.bundle.changeLocale(locales.get("pt_BR")));
 		buttonBrazil.setContentAreaFilled(false);
 		buttonBrazil.setBounds(12, 25, 45, 40);
-		filler.tooltip(buttonBrazil, "button-brazil");
+		filler.setToolTipText(buttonBrazil, "button-brazil");
 		panelLanguages.add(buttonBrazil);
 		
 		buttonUSA = new JButton(usaFlag);
 		buttonUSA.addActionListener((event) -> this.bundle.changeLocale(locales.get("en_US")));
 		buttonUSA.setContentAreaFilled(false);
 		buttonUSA.setBounds(69, 25, 45, 40);
-		filler.tooltip(buttonUSA, "button-usa");
+		filler.setToolTipText(buttonUSA, "button-usa");
 		panelLanguages.add(buttonUSA);
 		
 		buttonJapan = new JButton(japanFlag);
 		buttonJapan.addActionListener((event) -> this.bundle.changeLocale(locales.get("ja_JP")));
 		buttonJapan.setContentAreaFilled(false);
 		buttonJapan.setBounds(126, 25, 45, 40);
-		filler.tooltip(buttonJapan, "button-japan");
+		filler.setToolTipText(buttonJapan, "button-japan");
 		panelLanguages.add(buttonJapan);
 		
 		panelURL = new JPanel();
 		panelURL.setLayout(null);
 		panelURL.setOpaque(false);
 		panelURL.setBounds(209, 12, 803, 75);
-		filler.border(panelURL, "panel-url");
+		filler.setBorder(panelURL, "panel-url");
 		mainFrame.add(panelURL);
 		
 		textURL = new JTextField();
@@ -148,38 +148,38 @@ public class HDWMainGui extends JFrame {
 		textURL.setFont(font);
 		textURL.setColumns(10);
 		textURL.setBounds(12, 30, 653, 25);
-		filler.tooltip(textURL, "text-url");
+		filler.setToolTipText(textURL, "text-url");
 		panelURL.add(textURL);
 		
 		buttonURLPaste = new JButton(pasteIcon);
 		buttonURLPaste.addActionListener((event) -> textURL.setText(ClipboardUtils.copy()));
 		buttonURLPaste.setBounds(677, 30, 30, 25);
-		filler.tooltip(buttonURLPaste, "button-url-paste");
+		filler.setToolTipText(buttonURLPaste, "button-url-paste");
 		panelURL.add(buttonURLPaste);
 		
 		buttonURLClear = new JButton(clearIcon);
 		buttonURLClear.addActionListener((event) -> actionPlaylistClear());
 		buttonURLClear.setBounds(719, 30, 30, 25);
-		filler.tooltip(buttonURLClear, "button-url-clear");
+		filler.setToolTipText(buttonURLClear, "button-url-clear");
 		panelURL.add(buttonURLClear);
 		
 		buttonURLParse = new JButton(parseIcon);
 		buttonURLParse.addActionListener((event) -> actionPlaylistParse());
 		buttonURLParse.setBounds(761, 30, 30, 25);
-		filler.tooltip(buttonURLParse, "button-url-parse");
+		filler.setToolTipText(buttonURLParse, "button-url-parse");
 		panelURL.add(buttonURLParse);
 		
 		panelMedia = new JPanel();
 		panelMedia.setOpaque(false);
 		panelMedia.setBounds(12, 90, 1000, 110);
 		panelMedia.setLayout(null);
-		filler.border(panelMedia, "panel-media");
+		filler.setBorder(panelMedia, "panel-media");
 		mainFrame.add(panelMedia);
 		
 		panelResolution = new JPanel();
 		panelResolution.setOpaque(false);
 		panelResolution.setBounds(12, 25, 239, 70);
-		filler.border(panelResolution, "panel-resolution");
+		filler.setBorder(panelResolution, "panel-resolution");
 		panelResolution.setLayout(null);
 		panelMedia.add(panelResolution);
 		
@@ -201,7 +201,7 @@ public class HDWMainGui extends JFrame {
 		panelOutput.setOpaque(false);
 		panelOutput.setBounds(263, 25, 725, 70);
 		panelOutput.setLayout(null);
-		filler.border(panelOutput,"panel-output");
+		filler.setBorder(panelOutput,"panel-output");
 		panelMedia.add(panelOutput);
 		
 		textOutputFile = new JTextField();
@@ -215,31 +215,31 @@ public class HDWMainGui extends JFrame {
 		buttonOutputSelect = new JButton(selectIcon);
 		buttonOutputSelect.addActionListener((event) -> actionOutputSelect());
 		buttonOutputSelect.setBounds(641, 25, 30, 25);
-		filler.tooltip(buttonOutputSelect, "button-output-select");
+		filler.setToolTipText(buttonOutputSelect, "button-output-select");
 		panelOutput.add(buttonOutputSelect);
 		
 		buttonOutputClear = new JButton(clearIcon);
 		buttonOutputClear.addActionListener((event) -> actionOutputClear());
 		buttonOutputClear.setBounds(683, 25, 30, 25);
-		filler.tooltip(buttonOutputClear, "button-output-clear");
+		filler.setToolTipText(buttonOutputClear, "button-output-clear");
 		panelOutput.add(buttonOutputClear);
 		
 		buttonExit = new JButton(exitIcon);
 		buttonExit.addActionListener((event) -> dispose());
 		buttonExit.setBounds(942, 658, 30, 25);
-		filler.tooltip(buttonExit, "button-exit");
+		filler.setToolTipText(buttonExit, "button-exit");
 		mainFrame.add(buttonExit);
 		
 		buttonDownload = new JButton(downloadIcon);
 		buttonDownload.addActionListener((event) -> actionDownload());
 		buttonDownload.setBounds(982, 658, 30, 25);
-		filler.tooltip(buttonDownload, "button-download");
+		filler.setToolTipText(buttonDownload, "button-download");
 		mainFrame.add(buttonDownload);
 		
 		buttonCancel = new JButton(cancelIcon);
 		buttonCancel.addActionListener((event) -> actionDownloadStop());
 		buttonCancel.setBounds(982, 658, 30, 25);
-		filler.tooltip(buttonCancel, "button-cancel");
+		filler.setToolTipText(buttonCancel, "button-cancel");
 		mainFrame.add(buttonCancel);
 		
 		labelLog = new JLabel();
@@ -251,7 +251,7 @@ public class HDWMainGui extends JFrame {
 		panelConsole.setOpaque(false);
 		panelConsole.setBounds(12, 205, 1000, 361);
 		panelConsole.setLayout(null);
-		filler.border(panelConsole, "panel-console");
+		filler.setBorder(panelConsole, "panel-console");
 		mainFrame.add(panelConsole);
 		
 		JScrollPane scrollConsole = new JScrollPane();
@@ -283,7 +283,7 @@ public class HDWMainGui extends JFrame {
 		onCreateOptionsPopupMenu();
 		
 		// Loading texts, tooltip texts and borders to UI
-		this.bundle.refresh();
+		this.bundle.updateUI();
 		
 		setSize(dimension);
 		setResizable(false);
@@ -301,12 +301,12 @@ public class HDWMainGui extends JFrame {
 		
 		itemSave = new JMenuItem();
 		itemSave.addActionListener((event) -> actionMenuSave());
-		filler.text(itemSave, "item-save");
+		filler.setText(itemSave, "item-save");
 		popup.add(itemSave);
 		
 		itemClear = new JMenuItem();
 		itemClear.addActionListener((event) -> textConsole.setText(null));
-		filler.text(itemClear, "item-clear");
+		filler.setText(itemClear, "item-clear");
 		popup.add(itemClear);
 		
 		textConsole.setComponentPopupMenu(popup);
