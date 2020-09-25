@@ -1,41 +1,114 @@
-# Títulos dos painéis
-panel-languages=Idiomas Disponíveis
-panel-url=URL da Playlist HLS
-panel-media=Seleção de Mídia
-panel-resolution=Resolução e Duração
-panel-output=Arquivo de Saída
-panel-console=Console
+# Títulos de Painel
+panel-languages  = Idiomas Disponíveis
+panel-url        = URL da Playlist HLS
+panel-media      = Seleção de Mídia
+panel-resolution = Resolução e Duração
+panel-output     = Arquivo de Saída
+panel-console    = Console
 
 # Dicas
-button-brazil=Português (Brasil)
-button-usa=Inglês (Estados Unidos)
-button-japan=Japonês
-text-url=Aqui vai o link da playlist HLS-M3U
-button-url-paste=Cola um link da área de transferência
-button-url-clear=Limpar URL
-button-url-parse=Analisar URL
-button-output-select=Selecionar arquivo de saída
-button-output-clear=Limpar seleção de arquivo
-button-download=Baixar mídia
-button-cancel=Cancela o download da mídia
-button-exit=Sair do programa
+button-brazil        = Português (Brasil)
+button-usa           = Inglês (Estados Unidos)
+button-japan         = Japonês
+text-url             = Aqui vai o link da playlist HLS-M3U
+button-url-paste     = Cola um link da área de transferência
+button-url-clear     = Limpar URL
+button-url-parse     = Analisar URL
+button-output-select = Selecionar arquivo de saída
+button-output-clear  = Limpar seleção de arquivo
+button-download      = Baixar mídia
+button-cancel        = Cancela o download da mídia
+button-exit          = Sair do programa
 
-# Menu de popup do console
-item-save=Salvar para arquivo de texto
-item-clear=Limpar texto do console
+# Menus de popup do console
+item-save  = Salvar para arquivo de texto
+item-clear = Limpar texto do console
 
-# Diálogos
-action-download-parse-error=Você primeiro precisa analisar uma playlist HLS válida
-action-download-file-error=Por favor, selecione um arquivo de saída
-action-download-overwrite=(sobrescrever)
+# Diálogos (por método)
 
-action-download-stop=Você tem certeza que quer\n\
-                     parar o download atual?
+! HDWMainGui::actionDownload
 
-action-menu-save-title=Salvando console
-action-menu-save-file-dialog=Selecione um arquivo de saída
-action-menu-save-timestamp=dd/MM/yyyy HH:mm:ss
-action-menu-save-log=HDW Console Log
-action-menu-save-success=Log do console salvo com sucesso!
-action-menu-save-fail=Falha ao salvar arquivo de texto
-action-menu-save-ro=Não foi possível criar o arquivo de texto.\nA pasta selecionada é somente leitura.
+action-download-dialog-title = Baixando mídia
+action-download-parse-error  = Você primeiro precisa analisar uma playlist HLS válida
+action-download-file-error   = Por favor, selecione um arquivo de saída
+action-download-overwrite    = (sobrescrever)
+action-download-stop         = Você tem certeza que quer\n\
+                               parar o download atual?
+action-download-confirm      = Por favor, verifique se está tudo certo com sua seleção:\n\
+                               \n\
+                               Resolução selecionada: %s\n\
+                               Arquivo de saída: %s %s\n\
+                               \n\
+                               Após a confirmação, o arquivo será baixado para o local escolhido acima.\n\
+                               Durante este processo todos os botões e campos de texto serão bloqueados\n\
+                               para garantir a estabilidade do sistema, mas não se preocupe, quando tudo\n\
+                               terminar, o programa desbloqueará todos os campos. Lembrando que você\n\
+                               pode cancelar este processo a qualquer momento.
+
+! HDWMainGui::actionMenuSave
+
+action-menu-save-title       = Salvando console
+action-menu-save-file-dialog = Selecione um arquivo de saída
+action-menu-save-timestamp   = dd/MM/yyyy HH:mm:ss
+action-menu-save-log         = Log do console do HDW
+action-menu-save-success     = Log do console salvo com sucesso!
+action-menu-save-fail        = Falha ao salvar arquivo de texto
+action-menu-save-ro          = Não foi possível criar o arquivo de texto.\n\
+                               A pasta selecionada é somente leitura.
+
+! HDWMainGui::actionOutputSelect
+
+action-output-select-title    = Seleção de Arquivo de Saída
+action-output-select-dialog   = Selecione um arquivo de saída
+action-output-select-readonly = O arquivo selecionado está numa pasta apenas-leitura.\n\
+                                Por favor, escolha uma pasta com permissões de escrita.
+action-output-select-override = O arquivo selecionado já existe.\n\
+                                Deseja sobrescrevê-lo?
+
+! HDWMainGui::dispose
+
+dispose-title   = Saindo do programa
+dispose-confirm = Ao sair, o download em andamento será automaticamente interrompido,\n\
+                  mas o arquivo sendo baixado provavelmente continuará em seu sistema.\n\
+                  Deseja mesmo prosseguir?
+
+! HDWMainGui::downloader
+
+downloader-success-dialog = Download completo!
+
+! HDWMainGui::actionPlaylistClear
+
+playlist-clear-title  = Limpando link
+playlist-clear-dialog = Ao remover o link, toda a tela será limpa.\n\
+						Deseja mesmo continuar?						
+
+# Textos do console
+console-select-res    = :: Resolução Selecionada:
+console-file-clear    = :: Arquivo de saída removido
+console-file-select   = :: Arquivo de saída em '
+console-ok            =    ok
+console-fail          =    falha
+console-media-probe   = :: Falha ao buscar informações sobre a mídia
+console-dw-started    = :: Download da mídia iniciado
+console-dw-complete   = :: Download da mídia completado
+console-dw-stopped    = :: Download da mídia interrompido
+console-dw-failed     = :: Falha ao baixar mídia
+console-parse-started = :: Análise de mídia em andamento...
+
+# Textos estáticos
+label-parse-started  = Baixando playlist...
+label-parse-progress = Analisando playlist...
+label-parse-url-fail = URL de playlist inválida
+label-parse-501-fail = O servidor está recusando conexões
+label-parse-unk-fail = Erro desconhecido, por favor, cheque o console do sistema
+label-parse-io-fail  = Erro de E/S de dados
+
+label-probe-fail = Falha ao recuperar duração e resolução da mídia, por favor, cheque o console do sistema
+
+label-downloader-started = Baixando mídia
+label-downloader-success = Download completo!
+label-downloader-stopped = Download cancelado
+label-downloader-fail    = Falha ao baixar mídia, cheque o console do sistema
+
+# FFMPEG
+ffmpeg-debug-format = [%d%%] quadro: %d | tempo: %s | fps: %.0f | velocidade: %.2fx | tamanho baixado: %s\n\

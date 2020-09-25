@@ -1,40 +1,113 @@
 # Panel titles
-panel-languages=Available Languages
-panel-url=HLS Playlist URL
-panel-media=Media Selection
-panel-resolution=Resolution & Duration
-panel-output=Output File
-panel-console=Console
+panel-languages  = Available Languages
+panel-url        = HLS Playlist URL
+panel-media      = Media Selection
+panel-resolution = Resolution & Duration
+panel-output     = Output File
+panel-console    = Console
 
 # Hints
-button-brazil=Portuguese (Brazil)
-button-usa=English (USA)
-button-japan=Japanese
-text-url=Here goes the M3U playlist URL
-button-url-paste=Get link from clipboard
-button-url-clear=Clear URL
-button-url-parse=Parse URL
-button-output-select=Select output file
-button-output-clear=Clear file selection
-button-download=Download media
-button-cancel=Stops the current running download
-button-exit=Exit program
+button-brazil        = Portuguese (Brazil)
+button-usa           = English (USA)
+button-japan         = Japanese
+text-url             = Here goes the M3U playlist URL
+button-url-paste     = Get link from clipboard
+button-url-clear     = Clear URL
+button-url-parse     = Parse URL
+button-output-select = Select output file
+button-output-clear  = Clear file selection
+button-download      = Download media
+button-cancel        = Stops the current running download
+button-exit          = Exit program
 
 # Console popup menu
-item-save=Save to text file
-item-clear=Clear console text
+item-save  = Save to text file
+item-clear = Clear console text
 
-# Dialogs
-action-download-parse-error=You first need to parse a valid HLS playlist file
-action-download-file-error=Please, select an output file
-action-download-overwrite=(overwrite)
-action-download-stop=Are you sure you want to\n\
-                     stop the current download?
+# Dialogs (by method)
 
-action-menu-save-title=Saving console
-action-menu-save-file-dialog=Select an output file
-action-menu-save-timestamp=yyyy/MM/dd HH:mm:ss
-action-menu-save-log=Log do console do HDW
-action-menu-save-success=Console log successfully saved!
-action-menu-save-fail=Could not save to text file
-action-menu-save-ro=Could not create the text file.\nThe current directory is in read-only mode.
+! HDWMainGui::actionDownload
+
+action-download-dialog-title = Downloading media
+action-download-parse-error  = You first need to parse a valid HLS playlist file
+action-download-file-error   = Please, select an output file
+action-download-overwrite    = (overwrite)
+action-download-stop         = Are you sure you want to\n\
+                               stop the current download?
+action-download-confirm      = Please, check if everything is fine with your selection:\n\
+                               \n\
+                               Selected resolution: %s\n\
+                               Output media: %s %s\n\
+                               \n\
+                               After confirming, the selected media will be downloaded\n\
+                               to the output selected. During the process, all fields are\n\
+                               blocked due to stability reasons, but don't worry, when\n\
+                               everything ends, the program will be fully unlocked.\n\
+                               Remember that you can cancel this process at any time.
+
+! HDWMainGui::actionMenuSave
+
+action-menu-save-title       = Saving console
+action-menu-save-file-dialog = Select an output file
+action-menu-save-timestamp   = yyyy/MM/dd HH:mm:ss
+action-menu-save-log         = HDW Console Log
+action-menu-save-success     = Console log successfully saved!
+action-menu-save-fail        = Could not save to text file
+action-menu-save-ro          = Could not create the text file.\n\The current directory is in read-only mode.
+
+! HDWMainGui::actionOutputSelect
+
+action-output-select-title    = Output File Selection
+action-output-select-dialog   = Select an output file
+action-output-select-readonly = The selected file is in a read-only directory.\n\
+                                Please, select a destination with writing permitions.
+action-output-select-override = The selected media already exists.\n\
+                                Do you want to overwrite it?
+
+! HDWMainGui::dispose
+
+dispose-title   = Exiting program
+dispose-confirm = When exiting, the running process is automaticaly stopped, but\n\
+                  the in-progress download file may still remain in your system.\n\
+                  Do you still want to continue?
+
+! HDWMainGui::downloader
+
+downloader-success-dialog = Everything's complete
+
+! HDWMainGui::actionPlaylistClear
+
+playlist-clear-title  = Clearing link
+playlist-clear-dialog = When clearing, the entire screen is reset.\n\
+						Do you still want to continue?
+
+# Console texts
+console-select-res    = :: Selected Resolution:
+console-file-clear    = :: Output file path cleared
+console-file-select   = :: Output file set to '
+console-ok            =    ok
+console-fail          =    fail
+console-media-probe   = :: Media probing failed
+console-dw-started    = :: Media download started
+console-dw-complete   = :: Media download complete
+console-dw-stopped    = :: Media download stopped
+console-dw-failed     = :: Media download failed
+console-parse-started = :: Started parsing process...
+
+# Label texts
+label-parse-started  = Downloading playlist...
+label-parse-progress = Parsing playlist...
+label-parse-url-fail = Invalid playlist URL
+label-parse-501-fail = The server is refusing connections
+label-parse-unk-fail = Unknown error occurred, please check your system's console
+label-parse-io-fail  = I/O error occurred
+
+label-probe-fail = Failed to get media size and duration, please check your system's console
+
+label-downloader-started = Downloading media
+label-downloader-success = Everything's complete
+label-downloader-stopped = Download stopped
+label-downloader-fail    = Failed to download media, please check your system's console
+
+# FFMPEG
+ffmpeg-debug-format = [%d%%] frame: %d | time: %s | fps: %.0f | speed: %.2fx | bytes loaded: %s\n\
