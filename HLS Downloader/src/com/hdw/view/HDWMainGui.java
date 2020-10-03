@@ -29,7 +29,7 @@ import com.hdw.controller.*;
 
 /** Implements the main User Interface and all its functionalities.
  *  @author Felipe André - felipeandresouza@hotmail.com
- *  @version 2.7 - 25/09/2020 */
+ *  @version 2.8 - 03/10/2020 */
 public class HDWMainGui extends JFrame {
 
 	// Serial
@@ -72,7 +72,7 @@ public class HDWMainGui extends JFrame {
 
 	/** Builds the graphical interface and its functionalities */
 	public HDWMainGui() {
-		super("HDW - build 20200916");
+		super("HDW - build 20201003");
 		
 		// Loading available locales
 		HashMap<String, Locale> locales = new HashMap<String, Locale>(2);
@@ -98,7 +98,7 @@ public class HDWMainGui extends JFrame {
 		Icon selectIcon   = ResourceManager.getIcon("icon/zoom.png",20,20);
 		
 		// Building UI
-		Dimension dimension = new Dimension(1024,650);
+		Dimension dimension = new Dimension(1045,660);
 		
 		JPanel mainFrame = new JPaintedPanel("img/background.png",dimension);
 		mainFrame.setLayout(null);
@@ -818,7 +818,7 @@ public class HDWMainGui extends JFrame {
 	        		String.format(bundle.getString("ffmpeg-debug-format"),
 	        			  progressValue,
       					  progress.frame,
-      					  FFmpegUtils.toTimecode(progress.out_time_ns, TimeUnit.NANOSECONDS),
+      					  FFmpegUtils.toTimecode(progress.out_time_ns, TimeUnit.NANOSECONDS).substring(0,8),
       					  progress.fps.doubleValue(),
       					  progress.speed,
       					  PhillFileUtils.humanReadableByteCount(progress.total_size)
