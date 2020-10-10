@@ -29,7 +29,7 @@ import com.hdw.controller.*;
 
 /** Implements the main User Interface and all its functionalities.
  *  @author Felipe André - felipeandresouza@hotmail.com
- *  @version 2.8 - 03/10/2020 */
+ *  @version 2.9 - 10/10/2020 */
 public class HDWMainGui extends JFrame {
 
 	// Serial
@@ -72,7 +72,7 @@ public class HDWMainGui extends JFrame {
 
 	/** Builds the graphical interface and its functionalities */
 	public HDWMainGui() {
-		super("HDW - build 20201003");
+		super("HDW - build 20201010");
 		
 		// Loading available locales
 		HashMap<String, Locale> locales = new HashMap<String, Locale>(2);
@@ -96,6 +96,7 @@ public class HDWMainGui extends JFrame {
 		Icon parseIcon    = ResourceManager.getIcon("icon/cog.png",20,20);
 		Icon pasteIcon    = ResourceManager.getIcon("icon/clipboard_past.png",20,20);
 		Icon selectIcon   = ResourceManager.getIcon("icon/zoom.png",20,20);
+		Icon openDirIcon  = ResourceManager.getIcon("icon/folder_open.png",20,20);
 		
 		// Building UI
 		Dimension dimension = new Dimension(1045,660);
@@ -208,15 +209,21 @@ public class HDWMainGui extends JFrame {
 		textOutputFile.setEditable(false);
 		textOutputFile.setFont(font);
 		textOutputFile.setForeground(color);
-		textOutputFile.setBounds(12, 25, 617, 25);
+		textOutputFile.setBounds(12, 25, 579, 25);
 		textOutputFile.setColumns(10);
 		panelOutput.add(textOutputFile);
 		
 		buttonOutputSelect = new JButton(selectIcon);
 		buttonOutputSelect.addActionListener((event) -> actionOutputSelect());
-		buttonOutputSelect.setBounds(641, 25, 30, 25);
+		buttonOutputSelect.setBounds(601, 25, 30, 25);
 		filler.setToolTipText(buttonOutputSelect, "button-output-select");
 		panelOutput.add(buttonOutputSelect);
+		
+		JButton buttonOutputOpen = new JButton(openDirIcon);
+		buttonOutputOpen.addActionListener((event) -> actionOutputOpen());
+		buttonOutputOpen.setBounds(641, 25, 30, 25);
+		filler.setToolTipText(buttonOutputOpen, "button-output-open");
+		panelOutput.add(buttonOutputOpen);
 		
 		buttonOutputClear = new JButton(clearIcon);
 		buttonOutputClear.addActionListener((event) -> actionOutputClear());
@@ -425,6 +432,21 @@ public class HDWMainGui extends JFrame {
 			this.outputFile = null;
 			
 			consoleln("console-file-clear", null);
+			
+		}
+		
+	}
+	
+	/** Opens the current selected dir path */
+	private void actionOutputOpen() {
+		
+		try {
+			
+			File dir = new File(this.outputFile.getParent());
+			Desktop.getDesktop().open(dir);
+			
+		}
+		catch (IOException | NullPointerException exception) {
 			
 		}
 		

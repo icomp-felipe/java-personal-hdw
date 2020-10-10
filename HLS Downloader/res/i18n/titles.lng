@@ -15,6 +15,7 @@ button-url-paste     = Get link from clipboard
 button-url-clear     = Clear URL
 button-url-parse     = Parse URL
 button-output-select = Select output file
+button-output-open   = Opens the current file directory
 button-output-clear  = Clear file selection
 button-download      = Download media
 button-cancel        = Stops the current running download
