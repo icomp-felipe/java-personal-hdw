@@ -78,7 +78,7 @@ public class PlaylistParser {
 		for (int i=0; i<lines.length; ) {
 			
 			// Detects direct media link
-			if (lines[i].contains("EXT-X-KEY")) {
+			if (lines[i].contains("EXT-X-KEY") || lines[i].contains("EXT-X-INDEPENDENT-SEGMENTS")) {
 				
 				Chunklist chunklist = new Chunklist(url, 0, 0);
 				playlist.add(chunklist);
@@ -88,7 +88,7 @@ public class PlaylistParser {
 			}
 			
 			// Detects playlist link
-			if (lines[i].contains("RESOLUTION")) {
+			if ((lines[i].contains("EXT-X-STREAM-INF")) && (lines[i].contains("RESOLUTION"))) {
 				
 				// Extracting resolution (raw text)
 				String resolution = lines[i].substring(lines[i].indexOf("RESOLUTION"));
