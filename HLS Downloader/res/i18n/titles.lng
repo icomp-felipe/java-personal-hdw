@@ -79,7 +79,7 @@ downloader-success-dialog = Everything's complete
 ! HDWMainGui::actionPlaylistClear
 
 playlist-clear-title  = Clearing link
-playlist-clear-dialog = When clearing, the entire screen is reset.\n\
+playlist-clear-dialog = When clearing, the entire screen is reset (but not the console).\n\
 						Do you still want to continue?
 
 # Console texts

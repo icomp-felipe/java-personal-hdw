@@ -29,7 +29,7 @@ import com.hdw.controller.*;
 
 /** Implements the main User Interface and all its functionalities.
  *  @author Felipe André - felipeandresouza@hotmail.com
- *  @version 2.10 - 14/10/2020 */
+ *  @version 2.11 - 02/11/2020 */
 public class HDWMainGui extends JFrame {
 
 	// Serial
@@ -72,7 +72,7 @@ public class HDWMainGui extends JFrame {
 
 	/** Builds the graphical interface and its functionalities */
 	public HDWMainGui() {
-		super("HDW - build 20201014");
+		super("HDW - build 20201102");
 		
 		// Loading available locales
 		HashMap<String, Locale> locales = new HashMap<String, Locale>(2);
@@ -529,7 +529,6 @@ public class HDWMainGui extends JFrame {
 		comboResolution.removeAllItems();
 		utilLockMasterPanel(false);
 		
-		textConsole.setText(null);
 		progressDownload.setValue(0);
 		progressDownload.setVisible(false);
 		

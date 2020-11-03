@@ -80,7 +80,7 @@ downloader-success-dialog = Download completo!
 ! HDWMainGui::actionPlaylistClear
 
 playlist-clear-title  = Limpando link
-playlist-clear-dialog = Ao remover o link, toda a tela será limpa.\n\
+playlist-clear-dialog = Ao remover o link, toda a tela será limpa (menos o console).\n\
 						Deseja mesmo continuar?						
 
 # Textos do console
