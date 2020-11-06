@@ -29,7 +29,7 @@ import com.hdw.controller.*;
 
 /** Implements the main User Interface and all its functionalities.
  *  @author Felipe André - felipeandresouza@hotmail.com
- *  @version 2.11 - 02/11/2020 */
+ *  @version 2.12 - 05/11/2020 */
 public class HDWMainGui extends JFrame {
 
 	// Serial
@@ -72,7 +72,7 @@ public class HDWMainGui extends JFrame {
 
 	/** Builds the graphical interface and its functionalities */
 	public HDWMainGui() {
-		super("HDW - build 20201102");
+		super("HDW - build 20201105");
 		
 		// Loading available locales
 		HashMap<String, Locale> locales = new HashMap<String, Locale>(2);
@@ -458,13 +458,17 @@ public class HDWMainGui extends JFrame {
 		final String title = this.bundle.getString("action-output-select-title");
 		
 		// Recovering the selected file
-		final File file = PhillFileUtils.loadFile(this.bundle.getString("action-output-select-dialog"),
-												  Constants.Format.MP4,
-												  PhillFileUtils.SAVE_DIALOG,
-												  lastSelectedDir);
+		File file = PhillFileUtils.loadFile(this.bundle.getString("action-output-select-dialog"),
+											Constants.Format.MP4,
+											PhillFileUtils.SAVE_DIALOG,
+											lastSelectedDir);
 		
 		// If something was selected...
 		if (file != null) {
+			
+			// Removing invalid characters from filename
+			if (file.getName().contains(":"))
+				file = new File(file.getParent(),file.getName().replace(":"," -"));
 			
 			// ((saving current directory info, to be used as suggestion by the JFileChooser later))
 			this.lastSelectedDir = file.getParentFile();
