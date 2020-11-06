@@ -29,7 +29,7 @@ import com.hdw.controller.*;
 
 /** Implements the main User Interface and all its functionalities.
  *  @author Felipe André - felipeandresouza@hotmail.com
- *  @version 2.12 - 05/11/2020 */
+ *  @version 2.13 - 05/11/2020 */
 public class HDWMainGui extends JFrame {
 
 	// Serial
@@ -525,7 +525,7 @@ public class HDWMainGui extends JFrame {
 		this.playlist = null;
 		this.outputFile = null;
 		
-		this.labelLog.setVisible(false);
+		utilHideMessage();
 		this.labelDuration.setText(null);
 		
 		textOutputFile.setText(null);
