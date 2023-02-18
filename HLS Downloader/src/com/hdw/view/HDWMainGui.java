@@ -389,7 +389,7 @@ public class HDWMainGui extends JFrame {
 		final File file = PhillFileUtils.loadFile(this.bundle.getString("action-menu-save-file-dialog"),
 				                                  Constants.Format.TXT,
 				                                  PhillFileUtils.SAVE_DIALOG,
-				                                  lastSelectedDir);
+				                                  lastSelectedDir, null);
 		
 		if (file != null)
 			
@@ -461,7 +461,7 @@ public class HDWMainGui extends JFrame {
 		File file = PhillFileUtils.loadFile(this.bundle.getString("action-output-select-dialog"),
 											Constants.Format.MP4,
 											PhillFileUtils.SAVE_DIALOG,
-											lastSelectedDir);
+											lastSelectedDir, null);
 		
 		// If something was selected...
 		if (file != null) {
