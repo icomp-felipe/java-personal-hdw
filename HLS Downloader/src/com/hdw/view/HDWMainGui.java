@@ -29,7 +29,7 @@ import com.hdw.controller.*;
 
 /** Implements the main User Interface and all its functionalities.
  *  @author Felipe André - felipeandresouza@hotmail.com
- *  @version 2.13 - 05/11/2020 */
+ *  @version 2.14 - 03/14/2023 */
 public class HDWMainGui extends JFrame {
 
 	// Serial
@@ -72,7 +72,7 @@ public class HDWMainGui extends JFrame {
 
 	/** Builds the graphical interface and its functionalities */
 	public HDWMainGui() {
-		super("HDW - build 20201105");
+		super("HDW - build 20230314");
 		
 		// Loading available locales
 		HashMap<String, Locale> locales = new HashMap<String, Locale>(2);
@@ -86,6 +86,7 @@ public class HDWMainGui extends JFrame {
 		
 		// Retrieving graphical elements from 'res' directory
 		GraphicsHelper.setFrameIcon(this,"icon/icon.png");
+		ESCDispose.register(this);
 		Font   font = helper.getFont ();
 		Color color = helper.getColor();
 		
@@ -111,7 +112,7 @@ public class HDWMainGui extends JFrame {
 		
 		panelLanguages = new JPanel();
 		panelLanguages.setOpaque(false);
-		panelLanguages.setBounds(12, 12, 185, 75);
+		panelLanguages.setBounds(10, 10, 185, 75);
 		panelLanguages.setLayout(null);
 		filler.setBorder(panelLanguages, "panel-languages");
 		mainFrame.add(panelLanguages);
@@ -140,67 +141,65 @@ public class HDWMainGui extends JFrame {
 		panelURL = new JPanel();
 		panelURL.setLayout(null);
 		panelURL.setOpaque(false);
-		panelURL.setBounds(209, 12, 803, 75);
+		panelURL.setBounds(200, 10, 835, 75);
 		filler.setBorder(panelURL, "panel-url");
 		mainFrame.add(panelURL);
 		
 		textURL = new JTextField();
-		textURL.setForeground(color);
 		textURL.setFont(font);
 		textURL.setColumns(10);
-		textURL.setBounds(12, 30, 653, 25);
+		textURL.setBounds(15, 30, 690, 25);
 		filler.setToolTipText(textURL, "text-url");
 		panelURL.add(textURL);
 		
 		buttonURLPaste = new JButton(pasteIcon);
 		buttonURLPaste.addActionListener((event) -> textURL.setText(ClipboardUtils.copy()));
-		buttonURLPaste.setBounds(677, 30, 30, 25);
+		buttonURLPaste.setBounds(715, 30, 30, 25);
 		filler.setToolTipText(buttonURLPaste, "button-url-paste");
 		panelURL.add(buttonURLPaste);
 		
 		buttonURLClear = new JButton(clearIcon);
 		buttonURLClear.addActionListener((event) -> actionPlaylistClear());
-		buttonURLClear.setBounds(719, 30, 30, 25);
+		buttonURLClear.setBounds(755, 30, 30, 25);
 		filler.setToolTipText(buttonURLClear, "button-url-clear");
 		panelURL.add(buttonURLClear);
 		
 		buttonURLParse = new JButton(parseIcon);
 		buttonURLParse.addActionListener((event) -> actionPlaylistParse());
-		buttonURLParse.setBounds(761, 30, 30, 25);
+		buttonURLParse.setBounds(795, 30, 30, 25);
 		filler.setToolTipText(buttonURLParse, "button-url-parse");
 		panelURL.add(buttonURLParse);
 		
 		panelMedia = new JPanel();
 		panelMedia.setOpaque(false);
-		panelMedia.setBounds(12, 90, 1000, 110);
+		panelMedia.setBounds(10, 85, 1025, 105);
 		panelMedia.setLayout(null);
 		filler.setBorder(panelMedia, "panel-media");
 		mainFrame.add(panelMedia);
 		
 		panelResolution = new JPanel();
 		panelResolution.setOpaque(false);
-		panelResolution.setBounds(12, 25, 239, 70);
+		panelResolution.setBounds(10, 25, 240, 70);
 		filler.setBorder(panelResolution, "panel-resolution");
 		panelResolution.setLayout(null);
 		panelMedia.add(panelResolution);
 		
 		comboResolution = new JComboBox<String>();
 		comboResolution.addActionListener((event) -> listenerCombo());
-		comboResolution.setBounds(12, 25, 125, 25);
+		comboResolution.setBounds(10, 25, 125, 25);
 		comboResolution.setFont(font);
-		comboResolution.setForeground(color);
 		panelResolution.add(comboResolution);
 		
 		labelDuration = new JLabel();
 		labelDuration.setForeground(color);
 		labelDuration.setHorizontalAlignment(JLabel.CENTER);
 		labelDuration.setFont(font);
-		labelDuration.setBounds(155, 25, 70, 25);
+		labelDuration.setBounds(145, 25, 80, 25);
 		panelResolution.add(labelDuration);
 		
 		panelOutput = new JPanel();
 		panelOutput.setOpaque(false);
-		panelOutput.setBounds(263, 25, 725, 70);
+		panelOutput.setBounds(255, 25, 760, 70);
 		panelOutput.setLayout(null);
 		filler.setBorder(panelOutput,"panel-output");
 		panelMedia.add(panelOutput);
@@ -208,61 +207,60 @@ public class HDWMainGui extends JFrame {
 		textOutputFile = new JTextField();
 		textOutputFile.setEditable(false);
 		textOutputFile.setFont(font);
-		textOutputFile.setForeground(color);
-		textOutputFile.setBounds(12, 25, 579, 25);
+		textOutputFile.setBounds(15, 25, 610, 25);
 		textOutputFile.setColumns(10);
 		panelOutput.add(textOutputFile);
 		
 		buttonOutputSelect = new JButton(selectIcon);
 		buttonOutputSelect.addActionListener((event) -> actionOutputSelect());
-		buttonOutputSelect.setBounds(601, 25, 30, 25);
+		buttonOutputSelect.setBounds(640, 25, 30, 25);
 		filler.setToolTipText(buttonOutputSelect, "button-output-select");
 		panelOutput.add(buttonOutputSelect);
 		
 		JButton buttonOutputOpen = new JButton(openDirIcon);
 		buttonOutputOpen.addActionListener((event) -> actionOutputOpen());
-		buttonOutputOpen.setBounds(641, 25, 30, 25);
+		buttonOutputOpen.setBounds(680, 25, 30, 25);
 		filler.setToolTipText(buttonOutputOpen, "button-output-open");
 		panelOutput.add(buttonOutputOpen);
 		
 		buttonOutputClear = new JButton(clearIcon);
 		buttonOutputClear.addActionListener((event) -> actionOutputClear());
-		buttonOutputClear.setBounds(683, 25, 30, 25);
+		buttonOutputClear.setBounds(720, 25, 30, 25);
 		filler.setToolTipText(buttonOutputClear, "button-output-clear");
 		panelOutput.add(buttonOutputClear);
 		
 		buttonExit = new JButton(exitIcon);
 		buttonExit.addActionListener((event) -> dispose());
-		buttonExit.setBounds(942, 580, 30, 25);
+		buttonExit.setBounds(965, 595, 30, 25);
 		filler.setToolTipText(buttonExit, "button-exit");
 		mainFrame.add(buttonExit);
 		
 		buttonDownload = new JButton(downloadIcon);
 		buttonDownload.addActionListener((event) -> actionDownload());
-		buttonDownload.setBounds(982, 580, 30, 25);
+		buttonDownload.setBounds(1005, 595, 30, 25);
 		filler.setToolTipText(buttonDownload, "button-download");
 		mainFrame.add(buttonDownload);
 		
 		buttonCancel = new JButton(cancelIcon);
 		buttonCancel.addActionListener((event) -> actionDownloadStop());
-		buttonCancel.setBounds(982, 580, 30, 25);
+		buttonCancel.setBounds(1005, 595, 30, 25);
 		filler.setToolTipText(buttonCancel, "button-cancel");
 		mainFrame.add(buttonCancel);
 		
 		labelLog = new JLabel();
 		labelLog.setFont(font);
-		labelLog.setBounds(12, 580, 721, 25);
+		labelLog.setBounds(10, 595, 721, 25);
 		mainFrame.add(labelLog);
 		
 		panelConsole = new JPanel();
 		panelConsole.setOpaque(false);
-		panelConsole.setBounds(12, 205, 1000, 361);
+		panelConsole.setBounds(10, 190, 1025, 395);
 		panelConsole.setLayout(null);
 		filler.setBorder(panelConsole, "panel-console");
 		mainFrame.add(panelConsole);
 		
 		JScrollPane scrollConsole = new JScrollPane();
-		scrollConsole.setBounds(12, 30, 976, 282);
+		scrollConsole.setBounds(10, 30, 1005, 320);
 		panelConsole.add(scrollConsole);
 		
 		textConsole = new JTextArea();
@@ -276,7 +274,7 @@ public class HDWMainGui extends JFrame {
 		progressDownload.setStringPainted(true);
 		progressDownload.setForeground(bl_lt);
 		progressDownload.setFont(font);
-		progressDownload.setBounds(12, 324, 976, 25);
+		progressDownload.setBounds(10, 360, 1005, 25);
 		progressDownload.setVisible(false);
 		panelConsole.add(progressDownload);
 		
