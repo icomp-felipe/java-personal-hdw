@@ -860,10 +860,10 @@ public class HDWMainGui extends JFrame {
       					  );
 	        		
 	        		// Updating UI
+	        		console(log);
 	        		SwingUtilities.invokeLater(() -> {
 	        			
 	        			progressDownload.setValue(progressValue);
-	        			console(log);
 	        			
 	        		});
 	        		
