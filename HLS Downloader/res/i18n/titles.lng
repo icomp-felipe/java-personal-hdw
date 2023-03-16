@@ -29,7 +29,7 @@ item-clear = Clear console text
 
 ! HDWMainGui::actionDownload
 
-action-download-dialog-title = Downloading media
+action-download-dialog-title = HDW - Downloading media
 action-download-parse-error  = You first need to parse a valid HLS playlist file
 action-download-file-error   = Please, select an output file
 action-download-overwrite    = (overwrite)
@@ -40,15 +40,14 @@ action-download-confirm      = Please, check if everything is fine with your sel
                                Selected resolution: %s\n\
                                Output media: %s %s\n\
                                \n\
-                               After confirming, the selected media will be downloaded\n\
-                               to the output selected. During the process, all fields are\n\
-                               blocked due to stability reasons, but don't worry, when\n\
-                               everything ends, the program will be fully unlocked.\n\
+                               After confirming, the selected media will be downloaded to the output selected.\n\
+                               During the process, all fields are blocked due to stability reasons, but don't worry!\n\
+                               When everything ends, the program will be fully unlocked.\n\
                                Remember that you can cancel this process at any time.
 
 ! HDWMainGui::actionMenuSave
 
-action-menu-save-title       = Saving console
+action-menu-save-title       = HDW - Saving console
 action-menu-save-file-dialog = Select an output file
 action-menu-save-timestamp   = yyyy/MM/dd HH:mm:ss
 action-menu-save-log         = HDW Console Log
@@ -58,7 +57,7 @@ action-menu-save-ro          = Could not create the text file.\n\The current dir
 
 ! HDWMainGui::actionOutputSelect
 
-action-output-select-title    = Output File Selection
+action-output-select-title    = HDW - Output File Selection
 action-output-select-dialog   = Select an output file
 action-output-select-readonly = The selected file is in a read-only directory.\n\
                                 Please, select a destination with writing permitions.
@@ -67,18 +66,18 @@ action-output-select-override = The selected media already exists.\n\
 
 ! HDWMainGui::dispose
 
-dispose-title   = Exiting program
+dispose-title   = HDW - Exiting program
 dispose-confirm = When exiting, the running process is automaticaly stopped, but\n\
                   the in-progress download file may still remain in your system.\n\
                   Do you still want to continue?
 
 ! HDWMainGui::downloader
 
-downloader-success-dialog = Everything's complete
+downloader-success-dialog = Everything's complete :)
 
 ! HDWMainGui::actionPlaylistClear
 
-playlist-clear-title  = Clearing link
+playlist-clear-title  = HDW - Clearing link
 playlist-clear-dialog = When clearing, the entire screen is reset (but not the console).\n\
 						Do you still want to continue?
 

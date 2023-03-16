@@ -29,7 +29,7 @@ item-clear = Limpar texto do console
 
 ! HDWMainGui::actionDownload
 
-action-download-dialog-title = Baixando mídia
+action-download-dialog-title = HDW - Baixando mídia
 action-download-parse-error  = Você primeiro precisa analisar uma playlist HLS válida
 action-download-file-error   = Por favor, selecione um arquivo de saída
 action-download-overwrite    = (sobrescrever)
@@ -48,7 +48,7 @@ action-download-confirm      = Por favor, verifique se está tudo certo com sua 
 
 ! HDWMainGui::actionMenuSave
 
-action-menu-save-title       = Salvando console
+action-menu-save-title       = HDW - Salvando console
 action-menu-save-file-dialog = Selecione um arquivo de saída
 action-menu-save-timestamp   = dd/MM/yyyy HH:mm:ss
 action-menu-save-log         = Log do console do HDW
@@ -59,7 +59,7 @@ action-menu-save-ro          = Não foi possível criar o arquivo de texto.\n\
 
 ! HDWMainGui::actionOutputSelect
 
-action-output-select-title    = Seleção de Arquivo de Saída
+action-output-select-title    = HDW - Seleção de Arquivo de Saída
 action-output-select-dialog   = Selecione um arquivo de saída
 action-output-select-readonly = O arquivo selecionado está numa pasta apenas-leitura.\n\
                                 Por favor, escolha uma pasta com permissões de escrita.
@@ -68,7 +68,7 @@ action-output-select-override = O arquivo selecionado já existe.\n\
 
 ! HDWMainGui::dispose
 
-dispose-title   = Saindo do programa
+dispose-title   = HDW - Saindo do programa
 dispose-confirm = Ao sair, o download em andamento será automaticamente interrompido,\n\
                   mas o arquivo sendo baixado provavelmente continuará em seu sistema.\n\
                   Deseja mesmo prosseguir?
@@ -79,7 +79,7 @@ downloader-success-dialog = Download completo!
 
 ! HDWMainGui::actionPlaylistClear
 
-playlist-clear-title  = Limpando link
+playlist-clear-title  = HDW - Limpando link
 playlist-clear-dialog = Ao remover o link, toda a tela será limpa (menos o console).\n\
 						Deseja mesmo continuar?						
 

@@ -29,7 +29,7 @@ import com.hdw.controller.*;
 
 /** Implements the main User Interface and all its functionalities.
  *  @author Felipe André - felipeandresouza@hotmail.com
- *  @version 2.14 - 03/14/2023 */
+ *  @version 2.15 - 03/15/2023 */
 public class HDWMainGui extends JFrame {
 
 	// Serial
@@ -72,10 +72,10 @@ public class HDWMainGui extends JFrame {
 
 	/** Builds the graphical interface and its functionalities */
 	public HDWMainGui() {
-		super("HDW - build 20230314");
+		super("HDW - build 20230315");
 		
 		// Loading available locales
-		HashMap<String, Locale> locales = new HashMap<String, Locale>(2);
+		HashMap<String, Locale> locales = new HashMap<String, Locale>();
 		locales.put("en_US",Locale.ENGLISH);
 		locales.put("pt_BR", new Locale("pt","BR"));
 		locales.put("ja_JP", new Locale("ja","JP"));
@@ -146,6 +146,7 @@ public class HDWMainGui extends JFrame {
 		mainFrame.add(panelURL);
 		
 		textURL = new JTextField();
+		textURL.addKeyListener((KeyReleasedListener) (event) -> { if (event.getKeyCode() == KeyEvent.VK_ENTER) actionPlaylistParse(); });
 		textURL.setFont(font);
 		textURL.setColumns(10);
 		textURL.setBounds(15, 30, 690, 25);
@@ -338,12 +339,12 @@ public class HDWMainGui extends JFrame {
 		
 		/*********** Checking pre-requisites ************/
 		if (this.playlist == null) {
-			AlertDialog.error(title,this.bundle.getString("action-download-parse-error"));
+			AlertDialog.error(this, title, this.bundle.getString("action-download-parse-error"));
 			return;
 		}
 		
 		if (this.outputFile == null) {
-			AlertDialog.error(title,this.bundle.getString("action-download-file-error"));
+			AlertDialog.error(this, title, this.bundle.getString("action-download-file-error"));
 			return;
 		}
 		
@@ -351,10 +352,9 @@ public class HDWMainGui extends JFrame {
 		String resolution = this.comboResolution.getSelectedItem().toString();
 		String overwrite = (this.outputFile.exists()) ? this.bundle.getString("action-download-overwrite") : "";
 		
-		String message = this.bundle.getFormattedString("action-download-confirm", resolution,this.outputFile.getAbsolutePath(),overwrite);
-		int choice = AlertDialog.dialog(title,message);
+		String message = this.bundle.getFormattedString("action-download-confirm", resolution, this.outputFile.getAbsolutePath(),overwrite);
 		
-		if (choice != AlertDialog.OK_OPTION)
+		if (AlertDialog.dialog(this, title, message) != AlertDialog.OK_OPTION)
 			return;
 
 		// Locking some fields to prevent the user to change values while downloading
@@ -371,9 +371,7 @@ public class HDWMainGui extends JFrame {
 	/** Stops the current running download. */
 	private void actionDownloadStop() {
 		
-		int choice = AlertDialog.dialog(this.bundle.getString("action-download-stop"));
-		
-		if (choice == AlertDialog.OK_OPTION)
+		if (AlertDialog.dialog(this, bundle.getString("action-download-stop")) == AlertDialog.OK_OPTION)
 			this.ffmpeg.interrupt();
 		
 	}
@@ -384,7 +382,7 @@ public class HDWMainGui extends JFrame {
 		final String title = this.bundle.getString("action-menu-save-title");
 		
 		// File selection dialog
-		final File file = PhillFileUtils.loadFile(this.bundle.getString("action-menu-save-file-dialog"),
+		final File file = PhillFileUtils.loadFile(this, this.bundle.getString("action-menu-save-file-dialog"),
 				                                  Constants.Format.TXT,
 				                                  PhillFileUtils.SAVE_DIALOG,
 				                                  lastSelectedDir, null);
@@ -409,15 +407,15 @@ public class HDWMainGui extends JFrame {
 					// Writing string to file (UTF-8)
 					FileUtils.writeStringToFile(file,builder.toString(),"UTF-8");
 					
-					AlertDialog.info(title, this.bundle.getString("action-menu-save-success"));
+					AlertDialog.info(this, title, this.bundle.getString("action-menu-save-success"));
 					
 				} catch (IOException exception) {
 					exception.printStackTrace();
-					AlertDialog.error(title, this.bundle.getString("action-menu-save-fail"));
+					AlertDialog.error(this, title, this.bundle.getString("action-menu-save-fail"));
 				}
 		
 			else
-				AlertDialog.error(title, this.bundle.getString("action-menu-save-ro"));
+				AlertDialog.error(this, title, this.bundle.getString("action-menu-save-ro"));
 		
 	}
 	
@@ -456,7 +454,7 @@ public class HDWMainGui extends JFrame {
 		final String title = this.bundle.getString("action-output-select-title");
 		
 		// Recovering the selected file
-		File file = PhillFileUtils.loadFile(this.bundle.getString("action-output-select-dialog"),
+		File file = PhillFileUtils.loadFile(this, bundle.getString("action-output-select-dialog"),
 											Constants.Format.MP4,
 											PhillFileUtils.SAVE_DIALOG,
 											lastSelectedDir, null);
@@ -475,7 +473,7 @@ public class HDWMainGui extends JFrame {
 			if (!file.getParentFile().canWrite()) {
 				
 				String message = this.bundle.getString("action-output-select-readonly");
-				AlertDialog.error(title, message);
+				AlertDialog.error(this, title, message);
 				return;
 				
 			}
@@ -484,10 +482,9 @@ public class HDWMainGui extends JFrame {
 			if (file.exists()) {
 				
 				String message = this.bundle.getString("action-output-select-override");
-				int choice = AlertDialog.dialog(title,message);
 				
 				// If the user doesn't want to overwrite the selected file, the code ends here
-				if (choice != AlertDialog.OK_OPTION)
+				if (AlertDialog.dialog(this, title, message) != AlertDialog.OK_OPTION)
 					return;
 				
 			}
@@ -502,19 +499,22 @@ public class HDWMainGui extends JFrame {
 		
 	}
 	
+	/// Flag to control displaying of clearing confirm message
+	private boolean firstDownload = true;
+	
 	/** Resets the entire screen and its internal references. */
 	private void actionPlaylistClear() {
 		
-		// If a playlist was previously downloaded, a clear dialog is shown
-		if (this.playlist != null) {
+		// If a playlist was previously downloaded, and it was the very first time, a clear dialog is shown
+		if (this.playlist != null && this.firstDownload) {
 			
-			String title = this.bundle.getString("playlist-clear-title");
-			String message = this.bundle.getString("playlist-clear-dialog");
+			this.firstDownload = false;
 			
-			int choice     = AlertDialog.dialog(title, message);
+			String title  = this.bundle.getString("playlist-clear-title");
+			String dialog = this.bundle.getString("playlist-clear-dialog");
 			
 			// Breaks here when EXIT or CANCEL is selected
-			if (choice != AlertDialog.OK_OPTION)
+			if (AlertDialog.dialog(this, title, dialog) != AlertDialog.OK_OPTION)
 				return;
 			
 		}
@@ -545,65 +545,70 @@ public class HDWMainGui extends JFrame {
 		// Getting URL from text field
 		final String  website = textURL.getText().trim();
 		
-		// This job needs to be run inside a thread, since it connects to the Internet
-		Runnable job = () -> {
-		
-			try {
-				
-				// Updating UI
-				utilLockMasterPanel(true);
-				utilMessage("label-parse-started", blue, true);
-				console(this.bundle.getString("console-parse-started"));
-				
-				// Trying to download and parse the playlist object
-				final URL playlistURL = new URL(website);
-				final ArrayList<Chunklist> playlist = PlaylistParser.getConfig(playlistURL);
-				
-				// if I have a proper playlist...
-				if (playlist != null) {
+		// Avoiding action on blank URL's
+		if (!website.isEmpty()) {
+			
+			// This job needs to be run inside a thread, since it connects to the Internet
+			Runnable job = () -> {
+			
+				try {
 					
-					utilMessage("label-parse-progress", blue, true);
+					// Updating UI
+					utilLockMasterPanel(true);
+					utilMessage("label-parse-started", blue, true);
+					console(this.bundle.getString("console-parse-started"));
 					
-					// ...then I save it, ...
-					this.playlist = playlist;
+					// Trying to download and parse the playlist object
+					final URL playlistURL = new URL(website);
+					final ArrayList<Chunklist> playlist = PlaylistParser.getConfig(playlistURL);
 					
-					// ...get the media duration...
-					utilMediaProbe();
-					
-					// ...and fill the combobox.
-					utilFillCombo();
-					
-					// When everything finishes, the label is hidden and the clear button shown. 
-					utilHideMessage();	consoleln("console-ok",null);
-					SwingUtilities.invokeLater(() -> buttonURLClear.setEnabled(true));
+					// if I have a proper playlist...
+					if (playlist != null) {
+						
+						utilMessage("label-parse-progress", blue, true);
+						
+						// ...then I save it, ...
+						this.playlist = playlist;
+						
+						// ...get the media duration...
+						utilMediaProbe();
+						
+						// ...and fill the combobox.
+						utilFillCombo();
+						
+						// When everything finishes, the label is hidden and the clear button shown. 
+						utilHideMessage();	consoleln("console-ok",null);
+						SwingUtilities.invokeLater(() -> buttonURLClear.setEnabled(true));
+						
+					}
 					
 				}
-				
-			}
-			catch (MalformedURLException exception) {
-				utilLockMasterPanel(false);	consoleln("console-fail",null);
-				utilMessage("label-parse-url-fail", rd_dk, false, 5);
-			}
-			catch (ConnectException exception) {
-				utilLockMasterPanel(false);	consoleln("console-fail",null);
-				utilMessage("label-parse-501-fail", rd_dk, false, 5);
-			}
-			catch (IOException exception) {
-				utilLockMasterPanel(false);	consoleln("console-fail",null);
-				utilMessage("label-parse-io-fail", rd_dk, false, 5);
-			}
-			catch (Exception exception) {
-				exception.printStackTrace();
-				utilLockMasterPanel(false);	consoleln("console-fail",null);
-				utilMessage("label-parse-unk-fail", rd_dk, false, 10);
-			}
-		
-		};
-		
-		// Doing the hard work
-		Thread playlistParseThread = new Thread(job);
-		playlistParseThread.setName("Playlist Parser Thread");
-		playlistParseThread.start();
+				catch (MalformedURLException exception) {
+					utilLockMasterPanel(false);	consoleln("console-fail",null);
+					utilMessage("label-parse-url-fail", rd_dk, false, 5);
+				}
+				catch (ConnectException exception) {
+					utilLockMasterPanel(false);	consoleln("console-fail",null);
+					utilMessage("label-parse-501-fail", rd_dk, false, 5);
+				}
+				catch (IOException exception) {
+					utilLockMasterPanel(false);	consoleln("console-fail",null);
+					utilMessage("label-parse-io-fail", rd_dk, false, 5);
+				}
+				catch (Exception exception) {
+					exception.printStackTrace();
+					utilLockMasterPanel(false);	consoleln("console-fail",null);
+					utilMessage("label-parse-unk-fail", rd_dk, false, 10);
+				}
+			
+			};
+			
+			// Doing the hard work
+			Thread playlistParseThread = new Thread(job);
+			playlistParseThread.setName("Playlist Parser Thread");
+			playlistParseThread.start();
+			
+		}
 		
 	}
 	
@@ -783,6 +788,12 @@ public class HDWMainGui extends JFrame {
 	
 	/***************************** Threaded Methods Section *******************************/
 	
+	// Saves the actual download progress
+	private volatile int progressValue;
+	
+	// Flag to control safe disposing of threads 
+	private volatile boolean disposing;
+	
 	/** Downloads the selected media using ffmpeg. More information can be found at this method comments. */
 	private void downloader() {
 		
@@ -835,7 +846,7 @@ public class HDWMainGui extends JFrame {
 	        		
 	        		// Obtaining the current progress
 	        		final double percentage = Math.ceil((progress.out_time_ns / duration_ns) * 100f);
-	        		final int progressValue = (int) percentage;
+	        		progressValue = (int) percentage;
 	        		
 	        		// Formatting console output log
 	        		String log = 
@@ -860,7 +871,7 @@ public class HDWMainGui extends JFrame {
 	        	
 	        });
 	        
-	        // Doing the actual hard work - this thread will be locked here until the ffmpeg jog finishes
+	        // Doing the actual hard work - this thread will be locked here until the ffmpeg job finishes
 	        job.run();
 	        
 	        // If the 'dispose()' method was called, I need to imediately finish the current Thread
@@ -868,11 +879,11 @@ public class HDWMainGui extends JFrame {
 	        	return;
 	        
 	        // When the job finishes (or is interrupted) the UI is updated
-	        if (progressDownload.getValue() == 100) {
+	        if (progressValue >= 100) {
 	        	
 	        	consoleln  ("console-dw-complete",null);
 	        	utilMessage("label-downloader-success", gr_dk, false, 5);
-	        	AlertDialog.info( this.bundle.getString("action-download-dialog-title"), this.bundle.getString("downloader-success-dialog") );
+	        	AlertDialog.info(this, this.bundle.getString("action-download-dialog-title"), this.bundle.getString("downloader-success-dialog") );
 	        	
 	        }
 	        else {
@@ -896,9 +907,6 @@ public class HDWMainGui extends JFrame {
 		
 	}
 	
-	// Flag to control safe disposing of threads 
-	private volatile boolean disposing;
-	
 	@Override
 	public void dispose() {
 		
@@ -908,13 +916,13 @@ public class HDWMainGui extends JFrame {
 			String title   = this.bundle.getString("dispose-title");
 			String message = this.bundle.getString("dispose-confirm");
 			
-			int choice = AlertDialog.dialog(title, message);
-			
 			// and the user really wants to exit, we cancel the current running thread before
-			if (choice == AlertDialog.OK_OPTION) {
+			if (AlertDialog.dialog(this, title, message) == AlertDialog.OK_OPTION) {
+				
 				this.disposing = true;
 				this.ffmpeg.interrupt();
 				super.dispose();
+				
 			}
 			
 		}
