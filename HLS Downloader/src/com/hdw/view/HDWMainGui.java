@@ -118,21 +118,21 @@ public class HDWMainGui extends JFrame {
 		mainFrame.add(panelLanguages);
 		
 		buttonBrazil = new JButton(brazilFlag);
-		buttonBrazil.addActionListener((event) -> this.bundle.changeLocale(locales.get("pt_BR")));
+		buttonBrazil.addActionListener((_) -> this.bundle.changeLocale(locales.get("pt_BR")));
 		buttonBrazil.setContentAreaFilled(false);
 		buttonBrazil.setBounds(12, 25, 45, 40);
 		filler.setToolTipText(buttonBrazil, "button-brazil");
 		panelLanguages.add(buttonBrazil);
 		
 		buttonUSA = new JButton(usaFlag);
-		buttonUSA.addActionListener((event) -> this.bundle.changeLocale(locales.get("en_US")));
+		buttonUSA.addActionListener((_) -> this.bundle.changeLocale(locales.get("en_US")));
 		buttonUSA.setContentAreaFilled(false);
 		buttonUSA.setBounds(69, 25, 45, 40);
 		filler.setToolTipText(buttonUSA, "button-usa");
 		panelLanguages.add(buttonUSA);
 		
 		buttonJapan = new JButton(japanFlag);
-		buttonJapan.addActionListener((event) -> this.bundle.changeLocale(locales.get("ja_JP")));
+		buttonJapan.addActionListener((_) -> this.bundle.changeLocale(locales.get("ja_JP")));
 		buttonJapan.setContentAreaFilled(false);
 		buttonJapan.setBounds(126, 25, 45, 40);
 		filler.setToolTipText(buttonJapan, "button-japan");
@@ -154,19 +154,19 @@ public class HDWMainGui extends JFrame {
 		panelURL.add(textURL);
 		
 		buttonURLPaste = new JButton(pasteIcon);
-		buttonURLPaste.addActionListener((event) -> textURL.setText(ClipboardUtils.copy()));
+		buttonURLPaste.addActionListener((_) -> textURL.setText(ClipboardUtils.copy()));
 		buttonURLPaste.setBounds(715, 30, 30, 25);
 		filler.setToolTipText(buttonURLPaste, "button-url-paste");
 		panelURL.add(buttonURLPaste);
 		
 		buttonURLClear = new JButton(clearIcon);
-		buttonURLClear.addActionListener((event) -> actionPlaylistClear());
+		buttonURLClear.addActionListener((_) -> actionPlaylistClear());
 		buttonURLClear.setBounds(755, 30, 30, 25);
 		filler.setToolTipText(buttonURLClear, "button-url-clear");
 		panelURL.add(buttonURLClear);
 		
 		buttonURLParse = new JButton(parseIcon);
-		buttonURLParse.addActionListener((event) -> actionPlaylistParse());
+		buttonURLParse.addActionListener((_) -> actionPlaylistParse());
 		buttonURLParse.setBounds(795, 30, 30, 25);
 		filler.setToolTipText(buttonURLParse, "button-url-parse");
 		panelURL.add(buttonURLParse);
@@ -186,7 +186,7 @@ public class HDWMainGui extends JFrame {
 		panelMedia.add(panelResolution);
 		
 		comboResolution = new JComboBox<String>();
-		comboResolution.addActionListener((event) -> listenerCombo());
+		comboResolution.addActionListener((_) -> listenerCombo());
 		comboResolution.setBounds(10, 25, 125, 25);
 		comboResolution.setFont(font);
 		panelResolution.add(comboResolution);
@@ -213,37 +213,37 @@ public class HDWMainGui extends JFrame {
 		panelOutput.add(textOutputFile);
 		
 		buttonOutputSelect = new JButton(selectIcon);
-		buttonOutputSelect.addActionListener((event) -> actionOutputSelect());
+		buttonOutputSelect.addActionListener((_) -> actionOutputSelect());
 		buttonOutputSelect.setBounds(640, 25, 30, 25);
 		filler.setToolTipText(buttonOutputSelect, "button-output-select");
 		panelOutput.add(buttonOutputSelect);
 		
 		JButton buttonOutputOpen = new JButton(openDirIcon);
-		buttonOutputOpen.addActionListener((event) -> actionOutputOpen());
+		buttonOutputOpen.addActionListener((_) -> actionOutputOpen());
 		buttonOutputOpen.setBounds(680, 25, 30, 25);
 		filler.setToolTipText(buttonOutputOpen, "button-output-open");
 		panelOutput.add(buttonOutputOpen);
 		
 		buttonOutputClear = new JButton(clearIcon);
-		buttonOutputClear.addActionListener((event) -> actionOutputClear());
+		buttonOutputClear.addActionListener((_) -> actionOutputClear());
 		buttonOutputClear.setBounds(720, 25, 30, 25);
 		filler.setToolTipText(buttonOutputClear, "button-output-clear");
 		panelOutput.add(buttonOutputClear);
 		
 		buttonExit = new JButton(exitIcon);
-		buttonExit.addActionListener((event) -> dispose());
+		buttonExit.addActionListener((_) -> dispose());
 		buttonExit.setBounds(965, 595, 30, 25);
 		filler.setToolTipText(buttonExit, "button-exit");
 		mainFrame.add(buttonExit);
 		
 		buttonDownload = new JButton(downloadIcon);
-		buttonDownload.addActionListener((event) -> actionDownload());
+		buttonDownload.addActionListener((_) -> actionDownload());
 		buttonDownload.setBounds(1005, 595, 30, 25);
 		filler.setToolTipText(buttonDownload, "button-download");
 		mainFrame.add(buttonDownload);
 		
 		buttonCancel = new JButton(cancelIcon);
-		buttonCancel.addActionListener((event) -> actionDownloadStop());
+		buttonCancel.addActionListener((_) -> actionDownloadStop());
 		buttonCancel.setBounds(1005, 595, 30, 25);
 		filler.setToolTipText(buttonCancel, "button-cancel");
 		mainFrame.add(buttonCancel);
@@ -306,12 +306,12 @@ public class HDWMainGui extends JFrame {
 		JPopupMenu popup = new JPopupMenu();
 		
 		itemSave = new JMenuItem();
-		itemSave.addActionListener((event) -> actionMenuSave());
+		itemSave.addActionListener((_) -> actionMenuSave());
 		filler.setText(itemSave, "item-save");
 		popup.add(itemSave);
 		
 		itemClear = new JMenuItem();
-		itemClear.addActionListener((event) -> textConsole.setText(null));
+		itemClear.addActionListener((_) -> textConsole.setText(null));
 		filler.setText(itemClear, "item-clear");
 		popup.add(itemClear);
 		
