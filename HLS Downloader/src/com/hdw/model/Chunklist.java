@@ -4,7 +4,7 @@ import java.net.URL;
 
 /** Contains some data related to a HLS EXTM3U playlist.
  *  Here are stored the playlist URL and the media resolution.
- *  @author Felipe André - felipeandresouza@hotmail.com
+ *  @author Felipe André - felipeandre.eng@gmail.com
  *  @version 1.5 - 16/09/2020 */
 public class Chunklist {
 	

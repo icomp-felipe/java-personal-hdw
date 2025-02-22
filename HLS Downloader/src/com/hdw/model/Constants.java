@@ -3,12 +3,12 @@ package com.hdw.model;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /** Contains the constants used alongside this program.
- *  @author Felipe André - felipeandresouza@hotmail.com
+ *  @author Felipe André - felipeandre.eng@gmail.com
  *  @version 1.0 - 16/09/2020 */
 public class Constants {
 	
 	/** Contains file formats used by file choosers UI.
-	 *  @author Felipe André - felipeandresouza@hotmail.com
+	 *  @author Felipe André - felipeandre.eng@gmail.com
 	 *  @version 1.0 - 16/09/2020 */
 	public static class Format {
 		

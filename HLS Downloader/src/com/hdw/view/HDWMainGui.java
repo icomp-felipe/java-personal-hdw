@@ -28,7 +28,7 @@ import com.hdw.model.*;
 import com.hdw.controller.*;
 
 /** Implements the main User Interface and all its functionalities.
- *  @author Felipe André - felipeandresouza@hotmail.com
+ *  @author Felipe André - felipeandre.eng@gmail.com
  *  @version 2.15 - 03/17/2023 */
 public class HDWMainGui extends JFrame {
 

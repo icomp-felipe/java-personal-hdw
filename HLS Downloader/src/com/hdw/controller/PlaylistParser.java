@@ -7,7 +7,7 @@ import com.hdw.model.*;
 import org.apache.commons.io.*;
 
 /** Provides useful methods to handle with HLS EXTM3U formatted files.
- *  @author Felipe André - felipeandresouza@hotmail.com
+ *  @author Felipe André - felipeandre.eng@gmail.com
  *  @version 1.5, 16/09/2020 */
 public class PlaylistParser {
 
