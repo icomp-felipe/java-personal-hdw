@@ -559,7 +559,7 @@ public class HDWMainGui extends JFrame {
 					console(this.bundle.getString("console-parse-started"));
 					
 					// Trying to download and parse the playlist object
-					final URL playlistURL = new URL(website);
+					final URL playlistURL = new URI(website).toURL();
 					final ArrayList<Chunklist> playlist = PlaylistParser.getConfig(playlistURL);
 					
 					// if I have a proper playlist...
@@ -704,6 +704,9 @@ public class HDWMainGui extends JFrame {
 		try {
 			
 			FFprobe ffprobe = new FFprobe();
+			
+			System.out.println(chunklist.getURL());
+			
 			FFmpegProbeResult res = ffprobe.probe(chunklist.getURL());
 			
 			// Retrieving media duration

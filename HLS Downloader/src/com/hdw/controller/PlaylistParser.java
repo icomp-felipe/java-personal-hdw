@@ -16,7 +16,7 @@ public class PlaylistParser {
 	 *  @return A list containing all the {@link Chunklist} available to download through the given URL.
 	 *  @throws JSONException when, for some reason, the valid URL could not be reached or the given link doesn't provide a proper JSON.
 	 *  @throws IOException when the attempt to connect to the URL fails. */
-	public static ArrayList<Chunklist> getConfig(final URL url) throws IOException {
+	public static ArrayList<Chunklist> getConfig(final URL url) throws IOException, URISyntaxException {
 		
 		// Connecting to the URL
 		ArrayList<Chunklist> playlist = null;
@@ -67,8 +67,9 @@ public class PlaylistParser {
 	 *  @param url - main HLS formatted URL
 	 *  @param rawPlaylist - playlist downloaded from the given URL to a String
 	 *  @return A list of {@link Chunklist} extracted from the given 'rawPlaylist'.
-	 *  @throws MalformedURLException if no URL protocol is specified, or an unknown protocol is found, or 'chunkfile' is null.  */
-	private static ArrayList<Chunklist> parse(final URL url, final String rawPlaylist) throws MalformedURLException {
+	 *  @throws MalformedURLException if no URL protocol is specified, or an unknown protocol is found, or 'chunkfile' is null.  
+	 *  @throws URISyntaxException */
+	private static ArrayList<Chunklist> parse(final URL url, final String rawPlaylist) throws MalformedURLException, URISyntaxException {
 		
 		ArrayList<Chunklist> playlist = new ArrayList<Chunklist>();
 		
@@ -103,7 +104,7 @@ public class PlaylistParser {
 				
 				// Retrieving current playlist name
 				String chunkFile = lines[++i];
-				URL    chunkURL  = new URL(url, chunkFile);
+				URL    chunkURL  = url.toURI().resolve(chunkFile).toURL();
 				
 				// Creating chunklist object with extracted data...
 				Chunklist chunklist = new Chunklist(chunkURL,width,height);
