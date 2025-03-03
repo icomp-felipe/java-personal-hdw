@@ -8,14 +8,15 @@ import org.apache.commons.io.*;
 
 /** Provides useful methods to handle with HLS EXTM3U formatted files.
  *  @author Felipe André - felipeandre.eng@gmail.com
- *  @version 1.5, 16/09/2020 */
+ *  @version 2.20 - 02/FEB/2025 */
 public class PlaylistParser {
 
 	/** Retrieves a list of {@link Chunklist} from a given url.
 	 *  @param url - HSL formatted URL
 	 *  @return A list containing all the {@link Chunklist} available to download through the given URL.
 	 *  @throws JSONException when, for some reason, the valid URL could not be reached or the given link doesn't provide a proper JSON.
-	 *  @throws IOException when the attempt to connect to the URL fails. */
+	 *  @throws IOException when the attempt to connect to the URL fails. 
+	 *  @throws URISyntaxException if the provided <code>url</code> is not formatted strictly according to RFC2396 and cannot be converted to a URI. */
 	public static ArrayList<Chunklist> getConfig(final URL url) throws IOException, URISyntaxException {
 		
 		// Connecting to the URL
@@ -68,7 +69,7 @@ public class PlaylistParser {
 	 *  @param rawPlaylist - playlist downloaded from the given URL to a String
 	 *  @return A list of {@link Chunklist} extracted from the given 'rawPlaylist'.
 	 *  @throws MalformedURLException if no URL protocol is specified, or an unknown protocol is found, or 'chunkfile' is null.  
-	 *  @throws URISyntaxException */
+	 *  @throws URISyntaxException if the provided <code>url</code> is not formatted strictly according to RFC2396 and cannot be converted to a URI. */
 	private static ArrayList<Chunklist> parse(final URL url, final String rawPlaylist) throws MalformedURLException, URISyntaxException {
 		
 		ArrayList<Chunklist> playlist = new ArrayList<Chunklist>();

@@ -29,7 +29,7 @@ import com.hdw.controller.*;
 
 /** Implements the main User Interface and all its functionalities.
  *  @author Felipe André - felipeandre.eng@gmail.com
- *  @version 2.15 - 03/17/2023 */
+ *  @version 2.20 - 02/FEB/2025 */
 public class HDWMainGui extends JFrame {
 
 	// Serial
@@ -72,7 +72,7 @@ public class HDWMainGui extends JFrame {
 
 	/** Builds the graphical interface and its functionalities */
 	public HDWMainGui() {
-		super("HDW - build 20230317");
+		super("HDW - build 20250302");
 		
 		// Loading available locales
 		HashMap<String, Locale> locales = new HashMap<String, Locale>();
