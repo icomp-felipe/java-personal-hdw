@@ -2,13 +2,16 @@ package com.hdw.controller;
 
 import java.io.*;
 import java.net.*;
+import java.net.http.*;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.*;
 import com.hdw.model.*;
 import org.apache.commons.io.*;
 
 /** Provides useful methods to handle with HLS EXTM3U formatted files.
  *  @author Felipe André - felipeandre.eng@gmail.com
- *  @version 2.20 - 02/FEB/2025 */
+ *  @version 2.20 - 03/MAR/2025 */
 public class PlaylistParser {
 
 	/** Retrieves a list of {@link Chunklist} from a given url.
@@ -16,18 +19,21 @@ public class PlaylistParser {
 	 *  @return A list containing all the {@link Chunklist} available to download through the given URL.
 	 *  @throws JSONException when, for some reason, the valid URL could not be reached or the given link doesn't provide a proper JSON.
 	 *  @throws IOException when the attempt to connect to the URL fails. 
-	 *  @throws URISyntaxException if the provided <code>url</code> is not formatted strictly according to RFC2396 and cannot be converted to a URI. */
-	public static ArrayList<Chunklist> getConfig(final URL url) throws IOException, URISyntaxException {
+	 *  @throws URISyntaxException if the provided <code>url</code> is not formatted strictly according to RFC2396 and cannot be converted to a URI. 
+	 *  @throws InterruptedException if the connection operation is interrupted for some reason. */
+	public static ArrayList<Chunklist> getConfig(final URL url) throws IOException, URISyntaxException, InterruptedException {
 		
 		// Connecting to the URL
 		ArrayList<Chunklist> playlist = null;
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		
-		connection.setConnectTimeout( 5000);	// Connection timeout set to 5s
-		connection.setReadTimeout   (10000);	// Download timeout set to 10s
+		HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build();			// Connection timeout set to 5s
+		HttpRequest request = HttpRequest.newBuilder(url.toURI()).timeout(Duration.ofSeconds(10)).build();	// Download timeout set to 10s
+		
+		// Connecting...
+		HttpResponse<InputStream> response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
 		
 		// Getting the response
-		switch (connection.getResponseCode()) {
+		switch (response.statusCode()) {
 				
 			// Expired link
 			case 410:
@@ -41,8 +47,8 @@ public class PlaylistParser {
 			case 200:
 						
 				// Here I download the online 'playlist' file to a String
-				InputStream stream = connection.getInputStream();
-				String rawPlaylist = IOUtils.toString(stream,"UTF-8");
+				InputStream stream = response.body();
+				String rawPlaylist = IOUtils.toString(stream, StandardCharsets.UTF_8);
 				
 				// Closing web connection
 				stream.close();
@@ -58,8 +64,6 @@ public class PlaylistParser {
 				
 		}
 				
-		connection.disconnect();
-		
 		return playlist;
 		
 	}
