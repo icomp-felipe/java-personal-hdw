@@ -1,6 +1,6 @@
 # Títulos de Painel
 panel-languages  = Idiomas Disponíveis
-panel-url        = URL da Playlist HLS
+panel-uri        = URI da Playlist HLS
 panel-media      = Seleção de Mídia
 panel-resolution = Resolução e Duração
 panel-output     = Arquivo de Saída
@@ -10,10 +10,10 @@ panel-console    = Console
 button-brazil        = Português (Brasil)
 button-usa           = Inglês (Estados Unidos)
 button-japan         = Japonês
-text-url             = Aqui vai o link da playlist HLS-M3U
-button-url-paste     = Cola um link da área de transferência
-button-url-clear     = Limpar URL
-button-url-parse     = Analisar URL
+text-uri             = Aqui vai o link da playlist HLS-M3U
+button-uri-paste     = Cola um link da área de transferência
+button-uri-clear     = Limpar URI
+button-uri-parse     = Analisar URI
 button-output-select = Selecionar arquivo de saída
 button-output-open   = Abre a pasta de saída do arquivo selecionado
 button-output-clear  = Limpar seleção de arquivo
@@ -99,7 +99,7 @@ console-parse-started = :: Análise de mídia em andamento...
 # Textos estáticos
 label-parse-started  = Baixando playlist...
 label-parse-progress = Analisando playlist...
-label-parse-url-fail = URL de playlist inválida
+label-parse-uri-fail = URI de playlist inválida
 label-parse-501-fail = O servidor está recusando conexões
 label-parse-unk-fail = Erro desconhecido, por favor, cheque o console do sistema
 label-parse-io-fail  = Erro de E/S de dados

@@ -1,6 +1,6 @@
 # Panel titles
 panel-languages  = Available Languages
-panel-url        = HLS Playlist URL
+panel-uri        = HLS Playlist URI
 panel-media      = Media Selection
 panel-resolution = Resolution & Duration
 panel-output     = Output File
@@ -10,10 +10,10 @@ panel-console    = Console
 button-brazil        = Portuguese (Brazil)
 button-usa           = English (USA)
 button-japan         = Japanese
-text-url             = Here goes the M3U playlist URL
-button-url-paste     = Get link from clipboard
-button-url-clear     = Clear URL
-button-url-parse     = Parse URL
+text-uri             = Here goes the M3U playlist URI
+button-uri-paste     = Get link from clipboard
+button-uri-clear     = Clear URI
+button-uri-parse     = Parse URI
 button-output-select = Select output file
 button-output-open   = Opens the current file directory
 button-output-clear  = Clear file selection
@@ -97,7 +97,7 @@ console-parse-started = :: Started parsing process...
 # Label texts
 label-parse-started  = Downloading playlist...
 label-parse-progress = Parsing playlist...
-label-parse-url-fail = Invalid playlist URL
+label-parse-uri-fail = Invalid playlist URI
 label-parse-501-fail = The server is refusing connections
 label-parse-unk-fail = Unknown error occurred, please check your system's console
 label-parse-io-fail  = I/O error occurred

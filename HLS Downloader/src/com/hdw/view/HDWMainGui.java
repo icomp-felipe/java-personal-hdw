@@ -29,7 +29,7 @@ import com.hdw.controller.*;
 
 /** Implements the main User Interface and all its functionalities.
  *  @author Felipe André - felipeandre.eng@gmail.com
- *  @version 2.20 - 02/FEB/2025 */
+ *  @version 2.21 - 03/MAR/2025 */
 public class HDWMainGui extends JFrame {
 
 	// Serial
@@ -39,13 +39,13 @@ public class HDWMainGui extends JFrame {
 	
 	private final GraphicsHelper helper = GraphicsHelper.getInstance();
 	
-	private final JTextField textURL;
+	private final JTextField textURI;
 	private final JTextField textOutputFile;
 	private final JComboBox<String> comboResolution;
-	private final JButton buttonURLPaste, buttonURLClear, buttonURLParse;
+	private final JButton buttonURIPaste, buttonURIClear, buttonURIParse;
 	private final JButton buttonOutputSelect, buttonOutputClear;
 	private final JButton buttonDownload, buttonCancel, buttonExit;
-	private final JPanel panelLanguages, panelURL, panelMedia, panelResolution, panelOutput, panelConsole;
+	private final JPanel panelLanguages, panelURI, panelMedia, panelResolution, panelOutput, panelConsole;
 	private final JButton buttonBrazil, buttonUSA, buttonJapan;
 	private final JLabel labelDuration, labelLog;
 	private final JTextArea textConsole;
@@ -72,15 +72,14 @@ public class HDWMainGui extends JFrame {
 
 	/** Builds the graphical interface and its functionalities */
 	public HDWMainGui() {
-		super("HDW - build 20250302");
+		super("HDW - build 20250303");
 		
 		// Loading available locales
 		HashMap<String, Locale> locales = new HashMap<String, Locale>();
-		locales.put("en_US",Locale.ENGLISH);
+		locales.put("en_US", Locale.ENGLISH);
+		locales.put("ja_JP", Locale.JAPAN);
 		locales.put("pt_BR", Locale.of("pt","BR"));
-		locales.put("ja_JP", Locale.of("ja","JP"));
 		
-		// 
 		this.bundle = new PropertyBundle("i18n/titles", null);
 		this.filler = new PropertyBundleFiller(this.bundle);
 		
@@ -138,38 +137,38 @@ public class HDWMainGui extends JFrame {
 		filler.setToolTipText(buttonJapan, "button-japan");
 		panelLanguages.add(buttonJapan);
 		
-		panelURL = new JPanel();
-		panelURL.setLayout(null);
-		panelURL.setOpaque(false);
-		panelURL.setBounds(200, 10, 835, 75);
-		filler.setBorder(panelURL, "panel-url");
-		mainFrame.add(panelURL);
+		panelURI = new JPanel();
+		panelURI.setLayout(null);
+		panelURI.setOpaque(false);
+		panelURI.setBounds(200, 10, 835, 75);
+		filler.setBorder(panelURI, "panel-uri");
+		mainFrame.add(panelURI);
 		
-		textURL = new JTextField();
-		textURL.addKeyListener((KeyReleasedListener) (event) -> { if (event.getKeyCode() == KeyEvent.VK_ENTER) actionPlaylistParse(); });
-		textURL.setFont(font);
-		textURL.setColumns(10);
-		textURL.setBounds(15, 30, 690, 25);
-		filler.setToolTipText(textURL, "text-url");
-		panelURL.add(textURL);
+		textURI = new JTextField();
+		textURI.addKeyListener((KeyReleasedListener) (event) -> { if (event.getKeyCode() == KeyEvent.VK_ENTER) actionPlaylistParse(); });
+		textURI.setFont(font);
+		textURI.setColumns(10);
+		textURI.setBounds(15, 30, 690, 25);
+		filler.setToolTipText(textURI, "text-uri");
+		panelURI.add(textURI);
 		
-		buttonURLPaste = new JButton(pasteIcon);
-		buttonURLPaste.addActionListener((_) -> textURL.setText(ClipboardUtils.copy()));
-		buttonURLPaste.setBounds(715, 30, 30, 25);
-		filler.setToolTipText(buttonURLPaste, "button-url-paste");
-		panelURL.add(buttonURLPaste);
+		buttonURIPaste = new JButton(pasteIcon);
+		buttonURIPaste.addActionListener((_) -> textURI.setText(ClipboardUtils.copy()));
+		buttonURIPaste.setBounds(715, 30, 30, 25);
+		filler.setToolTipText(buttonURIPaste, "button-uri-paste");
+		panelURI.add(buttonURIPaste);
 		
-		buttonURLClear = new JButton(clearIcon);
-		buttonURLClear.addActionListener((_) -> actionPlaylistClear());
-		buttonURLClear.setBounds(755, 30, 30, 25);
-		filler.setToolTipText(buttonURLClear, "button-url-clear");
-		panelURL.add(buttonURLClear);
+		buttonURIClear = new JButton(clearIcon);
+		buttonURIClear.addActionListener((_) -> actionPlaylistClear());
+		buttonURIClear.setBounds(755, 30, 30, 25);
+		filler.setToolTipText(buttonURIClear, "button-uri-clear");
+		panelURI.add(buttonURIClear);
 		
-		buttonURLParse = new JButton(parseIcon);
-		buttonURLParse.addActionListener((_) -> actionPlaylistParse());
-		buttonURLParse.setBounds(795, 30, 30, 25);
-		filler.setToolTipText(buttonURLParse, "button-url-parse");
-		panelURL.add(buttonURLParse);
+		buttonURIParse = new JButton(parseIcon);
+		buttonURIParse.addActionListener((_) -> actionPlaylistParse());
+		buttonURIParse.setBounds(795, 30, 30, 25);
+		filler.setToolTipText(buttonURIParse, "button-uri-parse");
+		panelURI.add(buttonURIParse);
 		
 		panelMedia = new JPanel();
 		panelMedia.setOpaque(false);
@@ -534,18 +533,18 @@ public class HDWMainGui extends JFrame {
 		progressDownload.setValue(0);
 		progressDownload.setVisible(false);
 		
-		textURL.setText(null);
-		textURL.requestFocus();
+		textURI.setText(null);
+		textURI.requestFocus();
 		
 	}
 	
 	/** Downloads the EXTM3U playlist and parse its data. */
 	private void actionPlaylistParse() {
 		
-		// Getting URL from text field
-		final String  website = textURL.getText().trim();
+		// Getting URI from text field
+		final String website = textURI.getText().trim();
 		
-		// Avoiding action on blank URL's
+		// Avoiding action on blank URI's
 		if (!website.isEmpty()) {
 			
 			// This job needs to be run inside a thread, since it connects to the Internet
@@ -559,8 +558,8 @@ public class HDWMainGui extends JFrame {
 					console(this.bundle.getString("console-parse-started"));
 					
 					// Trying to download and parse the playlist object
-					final URL playlistURL = new URI(website).toURL();
-					final ArrayList<Chunklist> playlist = PlaylistParser.getConfig(playlistURL);
+					final URI playlistURI = new URI(website);
+					final ArrayList<Chunklist> playlist = PlaylistParser.getConfig(playlistURI);
 					
 					// if I have a proper playlist...
 					if (playlist != null) {
@@ -578,14 +577,14 @@ public class HDWMainGui extends JFrame {
 						
 						// When everything finishes, the label is hidden and the clear button shown. 
 						utilHideMessage();	consoleln("console-ok",null);
-						SwingUtilities.invokeLater(() -> buttonURLClear.setEnabled(true));
+						SwingUtilities.invokeLater(() -> buttonURIClear.setEnabled(true));
 						
 					}
 					
 				}
-				catch (MalformedURLException exception) {
+				catch (URISyntaxException exception) {
 					utilLockMasterPanel(false);	consoleln("console-fail",null);
-					utilMessage("label-parse-url-fail", rd_dk, false, 5);
+					utilMessage("label-parse-uri-fail", rd_dk, false, 5);
 				}
 				catch (ConnectException exception) {
 					utilLockMasterPanel(false);	consoleln("console-fail",null);
@@ -668,7 +667,7 @@ public class HDWMainGui extends JFrame {
 		
 		SwingUtilities.invokeLater(() -> {
 		
-			buttonURLClear    .setEnabled(enable);
+			buttonURIClear    .setEnabled(enable);
 			comboResolution   .setEnabled(enable);
 			buttonOutputSelect.setEnabled(enable);
 			buttonOutputClear .setEnabled(enable);
@@ -677,7 +676,7 @@ public class HDWMainGui extends JFrame {
 		
 	}
 	
-	/** Sets visibility of the first panel components (panelURL).
+	/** Sets visibility of the first panel components (panelURI).
 	 *  @param lock - if 'true' then then components are locked. Otherwise, unlocked */
 	private void utilLockMasterPanel(final boolean lock) {
 		
@@ -685,10 +684,10 @@ public class HDWMainGui extends JFrame {
 		
 		SwingUtilities.invokeLater(() -> {
 		
-			textURL       .setEditable(visibility);
-			buttonURLPaste.setEnabled (visibility);
-			buttonURLClear.setEnabled (visibility);
-			buttonURLParse.setEnabled (visibility);
+			textURI       .setEditable(visibility);
+			buttonURIPaste.setEnabled (visibility);
+			buttonURIClear.setEnabled (visibility);
+			buttonURIParse.setEnabled (visibility);
 		
 		});
 		
@@ -704,10 +703,7 @@ public class HDWMainGui extends JFrame {
 		try {
 			
 			FFprobe ffprobe = new FFprobe();
-			
-			System.out.println(chunklist.getURL());
-			
-			FFmpegProbeResult res = ffprobe.probe(chunklist.getURL());
+			FFmpegProbeResult res = ffprobe.probe(chunklist.getURI());
 			
 			// Retrieving media duration
 			String duration = FFmpegUtils.toTimecode((long) res.getFormat().duration, TimeUnit.SECONDS);
@@ -814,9 +810,9 @@ public class HDWMainGui extends JFrame {
 		
 		try {
 			
-			// Retrieving chunklist URL from the selected resolution
+			// Retrieving chunklist URI from the selected resolution
 			final Chunklist selected = this.playlist.get(comboResolution.getSelectedIndex());
-			final String playlistURL = selected.getURL();
+			final String playlistURI = selected.getURI();
 			
 			// Locating ffmpeg files
 			this.ffmpeg = new FFmpeg ();	// when no parameter is passed, it retrieves the path from your system's variables
@@ -826,12 +822,12 @@ public class HDWMainGui extends JFrame {
 	        FFmpegExecutor executor = new FFmpegExecutor(ffmpeg, ffprobe);
 	        
 	        // Probing current media
-	        FFmpegProbeResult in = ffprobe.probe(playlistURL);
+	        FFmpegProbeResult in = ffprobe.probe(playlistURI);
 	        
 	        // Creating ffmpeg command line:
 	        // ffmpeg -i <chunklist> -c copy -bsf:a aac_adtstoasc <output.mp4>
 	        FFmpegBuilder builder = new FFmpegBuilder()
-	        								.addInput(playlistURL)
+	        								.addInput(playlistURI)
 	        								.addOutput(this.outputFile.getAbsolutePath())
 	        								.setAudioCodec("copy")
 	        								.setVideoCodec("copy")

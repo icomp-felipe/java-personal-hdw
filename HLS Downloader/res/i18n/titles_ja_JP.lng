@@ -1,6 +1,6 @@
 # Panel titles
 panel-languages  = 他の言語
-panel-url        = HLSプレイリストURL
+panel-uri        = HLSプレイリストURL
 panel-media      = メディアの選択
 panel-resolution = 解像度と期間
 panel-output     = 出力ファイル
@@ -10,10 +10,10 @@ panel-console    = コンソール
 button-brazil        = ポルトガル語 (ブラジル)
 button-usa           = 英語 (アメリカ)
 button-japan         = 日本語
-text-url             = ここにM3UプレイリストのURLを入力する
-button-url-paste     = Get link from clipboard
-button-url-clear     = URLを消す
-button-url-parse     = Parse URL
+text-uri             = ここにM3UプレイリストのURLを入力する
+button-uri-paste     = Get link from clipboard
+button-uri-clear     = URLを消す
+button-uri-parse     = Parse URI
 button-output-select = Select output file
 button-output-clear  = 出力ファイルを消す
 button-download      = Download media
@@ -97,7 +97,7 @@ console-parse-started = :: Started parsing process...
 # Label texts
 label-parse-started  = Downloading playlist...
 label-parse-progress = Parsing playlist...
-label-parse-url-fail = Invalid playlist URL
+label-parse-uri-fail = Invalid playlist URI
 label-parse-501-fail = The server is refusing connections
 label-parse-unk-fail = Unknown error occurred, please check your system's console
 label-parse-io-fail  = I/O error occurred
