@@ -4,13 +4,13 @@ import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
 
 import javax.swing.*;
-
-import org.apache.commons.io.FileUtils;
 
 import net.bramp.ffmpeg.*;
 import net.bramp.ffmpeg.job.*;
@@ -404,7 +404,7 @@ public class HDWMainGui extends JFrame {
 								  builder.append(textConsole.getText());
 					
 					// Writing string to file (UTF-8)
-					FileUtils.writeStringToFile(file,builder.toString(),"UTF-8");
+					Files.write(file.toPath(), builder.toString().getBytes(StandardCharsets.UTF_8));
 					
 					AlertDialog.info(this, title, this.bundle.getString("action-menu-save-success"));
 					
